@@ -26,12 +26,10 @@ opts_knit$set(width=80)
 ```{r}
 # loading libraries
 library(tidyverse)
-library(car)
 library(emmeans)
 library(rstatix)
 library(multcomp)
 library(ggstatsplot)
-library(scales)
 ```
 
 # One-way ANOVA  
