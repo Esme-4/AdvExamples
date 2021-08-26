@@ -25,7 +25,7 @@ opts_knit$set(width=80)
 ```
 ```{r}
 # Set working directory
-setwd("~/Dropbox/GitHub/ProbEstad2021")
+setwd("~/Dropbox/GitHub/ProbEstad")
 
 # loading libraries
 library(tidyverse)
