@@ -37,9 +37,9 @@ library(ggstatsplot)
 library(scales)
 ```
 
-## LDS Daniel chap 8  LSADATA
+## LDS Daniel chap 8  LSADATA  
 One-way ANOVA exercises with large data sets.  
-Refer to the serum lipid-bound sialic acid data on 1400 subjects (LSADATA). We wish to conduct a study to determine if the measurement of serum lipid-bound sialic acid (LSA) might be of use in the detection of breast cancer. The LSA measurements (mg/dl) are for four populations of subjects: normal controls, A; patients with benign breast disease, B; patients with primary breast cancer, C; and patients with recurrent metastatic breast cancer, D. Select a simple random sample of size 10 from each population and perform an appropriate analysis to determine if we may conclude that the four population means are different.Let $ \alpha = .05$ and determine the p value.  
+Refer to the serum lipid-bound sialic acid data on 1400 subjects (LSADATA). We wish to conduct a study to determine if the measurement of serum lipid-bound sialic acid (LSA) might be of use in the detection of breast cancer. The LSA measurements (mg/dl) are for four populations of subjects: normal controls, A; patients with benign breast disease, B; patients with primary breast cancer, C; and patients with recurrent metastatic breast cancer, D. Select a simple random sample of size 10 from each population and perform an appropriate analysis to determine if we may conclude that the four population means are different.Let $\alpha = .05$ and determine the p value.  
 
 ## data import and tibble format  
 
