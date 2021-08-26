@@ -24,9 +24,6 @@ opts_chunk$set(echo=TRUE,
 opts_knit$set(width=80)
 ```
 ```{r}
-# Set working directory
-setwd("~/Dropbox/GitHub/ProbEstad")
-
 # loading libraries
 library(tidyverse)
 library(car)
@@ -46,12 +43,22 @@ Refer to the serum lipid-bound sialic acid data on 1400 subjects (LSADATA). We w
 First we read the large data set (LDS) for the serum lipid-bound sialic acid data on 1400 subjects (LSADATA).  
 
 ```{r}
-LSAdata <- read_csv("DataSets/ch08_all/LDS_C08_LSADATA.csv")
+# Reading from the stat class directory
+
+LSAdata <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/LDS_C08_LSADATA.csv")
 LSAdata
 ```
 
 Now change the column names according to the LDS description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)  
-The original data is in table form and we need to change it to "long" format. And then to do the ANOVA we need to make the `Type` of cancer variable a factor and then re-level to group and compare to `Cont.  
+The original data is in table form and we need to change it to "long" format. And then to do the ANOVA we need to make the `Type` of cancer variable a factor and then re-level to group and compare to `Cont. 
+```{r}
+LSAdata <- LSAdata %>% 
+  rename(Subj = Col1, Cont = Col2, BBD = Col3, PBC = Col4, RMBC = Col5)
+LSAdata_n <- LSAdata %>% 
+  select("Cont", "BBD", "PBC", "RMBC")
+```
+
+For the estimation of a model in ANOVA (and lm) the data most be in a "long format". To set the data in Type and LSA numbers in long format we "pivot" the data.  
 
 ```{r}
 # Make LSAdata long
