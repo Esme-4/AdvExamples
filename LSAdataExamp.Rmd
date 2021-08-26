@@ -1,0 +1,61 @@
+---
+title: "LSAdata OneWay ANOVA"
+author: "F.A. Barrios"
+date: "`r Sys.Date()`"
+output: 
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="80")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=FALSE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=80)
+```
+```{r}
+# Set working directory
+setwd("~/Dropbox/GitHub/ProbEstad2021")
+
+# loading libraries
+library(tidyverse)
+library(car)
+library(emmeans)
+library(rstatix)
+library(multcomp)
+library(ggstatsplot)
+library(scales)
+```
+
+## LDS Daniel chap 8  LSADATA
+One-way ANOVA exercises with large data sets.  
+Refer to the serum lipid-bound sialic acid data on 1400 subjects (LSADATA). We wish to conduct a study to determine if the measurement of serum lipid-bound sialic acid (LSA) might be of use in the detection of breast cancer. The LSA measurements (mg/dl) are for four populations of subjects: normal controls, A; patients with benign breast disease, B; patients with primary breast cancer, C; and patients with recurrent metastatic breast cancer, D. Select a simple random sample of size 10 from each population and perform an appropriate analysis to determine if we may conclude that the four population means are different.Let $ \alpha = .05$ and determine the p value.  
+
+## data import and tibble format  
+
+First we read the large data set (LDS) for the serum lipid-bound sialic acid data on 1400 subjects (LSADATA).  
+
+```{r}
+LSAdata <- read_csv("DataSets/ch08_all/LDS_C08_LSADATA.csv")
+LSAdata
+```
+
+Now change the column names according to the LDS descriptiom: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
