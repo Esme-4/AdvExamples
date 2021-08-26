@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   rmdformats::readthedown:
     highlight: kate
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -49,13 +50,35 @@ LSAdata <- read_csv("DataSets/ch08_all/LDS_C08_LSADATA.csv")
 LSAdata
 ```
 
-Now change the column names according to the LDS descriptiom: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)
-## Including Plots
+Now change the column names according to the LDS description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)  
+The original data is in table form and we need to change it to "long" format. And then to do the ANOVA we need to make the `Type` of cancer variable a factor and then re-level to group and compare to `Cont.  
 
-You can also embed plots, for example:
+``{r}
+# Make LSAdata long
+LSAdata_long <- LSAdata_n %>%
+  pivot_longer(cols = everything(), names_to = "Type", values_to = "LSA")
+  
+# Make the Type variable a factor and re-level to compare to Cont
+LSAdata_long <- LSAdata_long %>% 
+  mutate( Type = factor(Type) )
+LSAdata_long <- LSAdata_long %>% 
+  mutate( Type = Type %>% fct_relevel("Cont","BBD","PBC","RMBC") )
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Box Plots  
+
+Simple way to see if the data is in the correct format, a simple "direct" plot will generate the "correct" plot (BoxPlot) is the tibble is in the correct format `boxplot(LSA ~ Type, data = LSAdata_long)`.  
+
+```{r}
+# boxplot(LSA ~ Type, data = LSAdata_long)
+# nicer
+LSAdata_long %>% ggplot(aes(x = Type, y = LSA)) +
+    geom_boxplot() +
+#   geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), scale = "area") +
+    geom_jitter(aes(colour = Type), shape = 16, position = position_jitter(seed = 123)) +
+    labs(title = "Measurement of serum Lipid-bound Sialic Acid (LSA)") +
+    theme_bw()
+              
+```
+
