@@ -20,7 +20,7 @@ library(scales)
 #
 LSAdata <- read_csv("DataSets/ch08_all/LDS_C08_LSADATA.csv")
 
-# Now change the column names according to the LDS descriptiom: Subject#:Col1, Controls:Col2
+# Now change the column names according to the LDS description: Subject#:Col1, Controls:Col2
 # patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4
 # patients with recurrent metastatic breast cancer (RMBC)
 LSAdata <- LSAdata %>% 

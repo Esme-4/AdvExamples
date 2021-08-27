@@ -26,10 +26,6 @@ opts_knit$set(width=80)
 ```{r}
 # loading libraries
 library(tidyverse)
-library(emmeans)
-library(rstatix)
-library(multcomp)
-library(ggstatsplot)
 ```
 
 # One-way ANOVA  
@@ -52,20 +48,25 @@ The original data is in table form and we need to change it to "long" format. An
 ```{r}
 LSAdata <- LSAdata %>% 
   rename(Subj = Col1, Cont = Col2, BBD = Col3, PBC = Col4, RMBC = Col5)
+LSAdata
+
 LSAdata_n <- LSAdata %>% 
   select("Cont", "BBD", "PBC", "RMBC")
+LSAdata_n
 ```
 
-For the estimation of a model in ANOVA (and lm) the data most be in a "long format". To set the data in Type and LSA numbers in long format we "pivot" the data.  
+For the estimation of a model in ANOVA (and lm) the data most be in a "long format". To set the data in Type and LSA numbers in long format we "pivot" the data. Then we re-level the factors otherwise the categorical variables are ordered in alphabetical order and the comparisons are based in this order.  
 
 ```{r}
 # Make LSAdata long
 LSAdata_long <- LSAdata_n %>%
   pivot_longer(cols = everything(), names_to = "Type", values_to = "LSA")
-  
+LSAdata_long
+
 # Make the Type variable a factor and re-level to compare to Cont
 LSAdata_long <- LSAdata_long %>% 
   mutate( Type = factor(Type) )
+
 LSAdata_long <- LSAdata_long %>% 
   mutate( Type = Type %>% fct_relevel("Cont","BBD","PBC","RMBC") )
 ```
@@ -91,6 +92,11 @@ LSAdata_long %>% ggplot(aes(x = Type, y = LSA)) +
 We can use the `aov` or the `lm` function to estimate model. Save the model to a variable for processing and estimating the contrasts.  
 
 ```{r}
+library(emmeans)
+library(rstatix)
+library(multcomp)
+#
+
 LSAdata_lm <- lm(LSA ~ Type, data = LSAdata_long)
 Anova(LSAdata_lm)
 ```
@@ -123,6 +129,21 @@ res.kruskal
 LSAdata_long %>% kruskal_effsize(LSA ~ Type)
 # To estimate the pairwise corrected by multiple comparisons the Dunn's Test
 pc_LSAdata <- LSAdata_long %>% dunn_test(LSA ~ Type, p.adjust.method = "fdr")
+```
+
+Now there is a really nice graphical solution for this kind of problems in the `ggstatsplot` library. With really nice plots, comparing the results and presenting the significant differences and using violin plots and corrected comparisons.
+
+```{r}
+library(ggstatsplot)
+
+ggbetweenstats( data = LSAdata_long, 
+                x = Type, 
+                y = LSA, 
+                type = "p", 
+                pairwise.display = "s", 
+                p.adjust.method = "fdr", 
+                outlier.tagging = TRUE, 
+                title = "Measurement of serum lipid-bound sialic acid (LSA)" )
 ```
 
 
