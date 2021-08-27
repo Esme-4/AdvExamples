@@ -11,25 +11,25 @@
 # Test all possible pairs of sample means for significance. What conclusions can one draw from the analysis?
 
 library(tidyverse)
-library(car)
-library(emmeans)
-library(rstatix)
-library(multcomp)
-library(ggstatsplot)
-library(scales)
-#
-LSAdata <- read_csv("DataSets/ch08_all/LDS_C08_LSADATA.csv")
 
-# Now change the column names according to the LDS description: Subject#:Col1, Controls:Col2
+#
+LSAdata <- read_csv("~/DropBox/GitHub/ProbEstad/DataSets/ch08_all/LDS_C08_LSADATA.csv", show_col_types = FALSE)
+LSAdata
+# Now change the column names according to the LDS descriptiom: Subject#:Col1, Controls:Col2
 # patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4
 # patients with recurrent metastatic breast cancer (RMBC)
 LSAdata <- LSAdata %>% 
   rename(Subj = Col1, Cont = Col2, BBD = Col3, PBC = Col4, RMBC = Col5)
+LSAdata
+
 LSAdata_n <- LSAdata %>% 
   select("Cont", "BBD", "PBC", "RMBC")
+LSAdata_n
+
 # Make LSAdata long
 LSAdata_long <- LSAdata_n %>%
   pivot_longer(cols = everything(), names_to = "Type", values_to = "LSA")
+LSAdata_long
 
 # Make the Type of cancer variable a factor and then re-level to group and compare to Cont
 LSAdata_long <- LSAdata_long %>% 
@@ -46,11 +46,18 @@ LSAdata_long %>% ggplot(aes(x = Type, y = LSA)) +
     geom_jitter(aes(colour = Type), shape = 16, position = position_jitter(seed = 123)) +
     labs(title = "Measurement of serum Lipid-bound Sialic Acid (LSA)") +
     theme_bw()
-              
+ 
+# load the missing libraries
+library(car)
+library(emmeans)
+library(rstatix)
+
 # One Way ANOVA
 # running a lm model for the ANOVA
 LSAdata_lm <- lm(LSA ~ Type, data = LSAdata_long)
 Anova(LSAdata_lm)
+LSAdata_aov <- aov(LSA ~ Type, data = LSAdata_long)
+Anova(LSAdata_aov)
 
 # and now the emmeans to look for estimating the Tukey and 95% confidence intervals
 # first the pairwise comparisons with the Control group and contrasts
@@ -60,7 +67,7 @@ emmeans(LSAdata_lm, trt.vs.ctrl ~ Type)
 
 # Now using the rstatix library (grappers for statistical tests)anova
 LSAdata.aov <- LSAdata_long %>% anova_test(LSA ~ Type, effect.size = "ges", detailed = TRUE)
-get_anova_table(res.aov)
+get_anova_table(LSAdata.aov)
 # with emmeans
 LSAdata_long %>% emmeans_test(LSA ~ Type, p.adjust.method = "fdr", detailed = TRUE)
 
@@ -73,9 +80,22 @@ res.kruskal
 LSAdata_long %>% kruskal_effsize(LSA ~ Type)
 # To estimate the pairwise corrected by multiple comparisons the Dunn's Test
 pc_LSAdata <- LSAdata_long %>% dunn_test(LSA ~ Type, p.adjust.method = "fdr")
+pc_LSAdata
+
+# load coin library for estimating permutations
+library(coin)
+# Permutations, using the coin package
+set.seed(1234)
+LSAdata_aovp <- oneway_test(LSA ~ Type, data=LSAdata_long,
+                  distribution=approximate(nresample=9999))
+LSAdata_aovp
+statistic(LSAdata_aovp) 
+pvalue(LSAdata_aovp, method="global")
 
 # Now a really nice solution with vilolin plots and corrected comparisons
-# Thanks to the reslly nice library ggstatsplot
+# Thanks to the really nice library ggstatsplot
+library(ggstatsplot)
+
 ggbetweenstats( data = LSAdata_long, 
                 x = Type, 
                 y = LSA, 
