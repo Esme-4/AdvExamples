@@ -51,7 +51,7 @@ LSAdata <- LSAdata %>%
 LSAdata
 
 LSAdata_n <- LSAdata %>% 
-  select("Cont", "BBD", "PBC", "RMBC")
+  select(Cont, BBD, PBC, RMBC)
 LSAdata_n
 ```
 
