@@ -86,3 +86,21 @@ LSAdata_long %>% ggplot(aes(x = Type, y = LSA)) +
     theme_bw()
               
 ```
+
+# One-way ANOVA model estimation  
+
+## Simple model estimation  
+Now we estimate the model we know the data is in the right form (pivot_longer), and the categorical variable (factor) is ordered now. To estimate the ANOVA we can use the `aov` R function or the `lm` function at this point they are equivalent, and showing the results we use car function `Anova` or the R function `anova` can be used too. 
+
+```{r}
+library(car)
+# for the Anova function
+
+# running a lm model for the ANOVA
+LSAdata_lm <- lm(LSA ~ Type, data = LSAdata_long)
+Anova(LSAdata_lm)
+LSAdata_aov <- aov(LSA ~ Type, data = LSAdata_long)
+Anova(LSAdata_aov)
+anova(LSAdata_aov)
+```
+
