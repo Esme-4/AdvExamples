@@ -203,6 +203,7 @@
       <li><a href="#one-way-anova-model-estimation">One-way ANOVA model estimation</a>
       <ul>
       <li><a href="#simple-model-estimation">Simple model estimation</a></li>
+      <li><a href="#post-hoc-estimation">Post Hoc estimation</a></li>
       </ul></li>
       </ul>
     </div>
@@ -354,15 +355,57 @@ Type       8683.9    3  330.33 &lt; 2.2e-16 ***
 Residuals 12232.9 1396                      
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(LSAdata_aov)</span></code></pre></div>
-<pre><code>Analysis of Variance Table
-
-Response: LSA
-            Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
-Type         3  8683.9 2894.64  330.33 &lt; 2.2e-16 ***
-Residuals 1396 12232.9    8.76                      
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(LSAdata_aov)</span></code></pre></div>
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)    
+Type           3   8684  2894.6   330.3 &lt;2e-16 ***
+Residuals   1396  12233     8.8                   
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="post-hoc-estimation" class="section level2">
+<h2>Post Hoc estimation</h2>
+<p>After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another. There are different <em>post hoc</em> types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett’s tests.<br />
+The library <code>emmeans</code> has a function to estimate the Tukey and 95% confidence intervals first the pairwise comparisons with the Control group and contrasts, and then we will compare each cancer condition to control to show if the averages are significant different. If the call to emmeans is with the factor <code>pairwise</code> emmeans function estimates a Tukey HSD pairwise for all the factor levels. If the call to emmeans is made with treatment vs. control the function estimates a Dunnett’s test comparing the control average (first factor) to the rest, to determine the significant difference.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Use emmeans to look for estimating the Tukey and 95% confidence intervals</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(LSAdata_lm, pairwise <span class="sc">~</span> Type)</span></code></pre></div>
+<pre><code>$emmeans
+ Type emmean    SE   df lower.CL upper.CL
+ Cont   16.1 0.158 1396     15.8     16.4
+ BBD    20.1 0.158 1396     19.8     20.4
+ PBC    20.1 0.158 1396     19.8     20.4
+ RMBC   23.1 0.158 1396     22.8     23.5
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast    estimate    SE   df t.ratio p.value
+ Cont - BBD   -3.9506 0.224 1396 -17.655  &lt;.0001
+ Cont - PBC   -3.9777 0.224 1396 -17.776  &lt;.0001
+ Cont - RMBC  -7.0146 0.224 1396 -31.347  &lt;.0001
+ BBD - PBC    -0.0271 0.224 1396  -0.121  0.9994
+ BBD - RMBC   -3.0640 0.224 1396 -13.693  &lt;.0001
+ PBC - RMBC   -3.0369 0.224 1396 -13.571  &lt;.0001
+
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(LSAdata_lm, trt.vs.ctrl <span class="sc">~</span> Type)</span></code></pre></div>
+<pre><code>$emmeans
+ Type emmean    SE   df lower.CL upper.CL
+ Cont   16.1 0.158 1396     15.8     16.4
+ BBD    20.1 0.158 1396     19.8     20.4
+ PBC    20.1 0.158 1396     19.8     20.4
+ RMBC   23.1 0.158 1396     22.8     23.5
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast    estimate    SE   df t.ratio p.value
+ BBD - Cont      3.95 0.224 1396  17.655  &lt;.0001
+ PBC - Cont      3.98 0.224 1396  17.776  &lt;.0001
+ RMBC - Cont     7.01 0.224 1396  31.347  &lt;.0001
+
+P value adjustment: dunnettx method for 3 tests </code></pre>
 </div>
 </div>
 </div>

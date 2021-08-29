@@ -101,6 +101,17 @@ LSAdata_lm <- lm(LSA ~ Type, data = LSAdata_long)
 Anova(LSAdata_lm)
 LSAdata_aov <- aov(LSA ~ Type, data = LSAdata_long)
 Anova(LSAdata_aov)
-anova(LSAdata_aov)
+summary(LSAdata_aov)
 ```
 
+## Post Hoc estimation  
+After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another.  There are different *post hoc* types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett's tests.  
+The library `emmeans` has a function to estimate the Tukey and 95% confidence intervals first the pairwise comparisons with the Control group and contrasts, and then we will compare each cancer condition to control to show if the averages are significant different. If the call to emmeans is with the factor `pairwise` emmeans function estimates a Tukey HSD pairwise for all the factor levels. If the call to emmeans is made with treatment vs. control the function estimates a Dunnett's test comparing the control average (first factor) to the rest, to determine the significant difference.  
+
+```{r}
+library(emmeans)
+
+# Use emmeans to look for estimating the Tukey and 95% confidence intervals
+emmeans(LSAdata_lm, pairwise ~ Type)
+emmeans(LSAdata_lm, trt.vs.ctrl ~ Type)
+```
