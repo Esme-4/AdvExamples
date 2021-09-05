@@ -42,7 +42,7 @@ LSAdata <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/LDS_C08_LSADAT
 LSAdata
 ```
 
-Froma the raw data file the format is a tibble with variables for column and data point by rows, nevertheless to excecute a one-way ANOVA we need to [wrangle](https://en.wikipedia.org/wiki/Data_wrangling) the data. Start by changing the column names according to the LDS problem description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)  
+From the raw data file the format is a tibble with variables for column and data point by rows, nevertheless to execute a one-way ANOVA we need to [wrangle](https://en.wikipedia.org/wiki/Data_wrangling) the data. Start by changing the column names according to the LDS problem description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)  
 The original data is in table form and we need to change it to "long" format. And then to do the ANOVA we need to make the `Type` of cancer variable a factor and then re-level to group and compare to `Cont. 
 ```{r}
 LSAdata <- LSAdata %>% 
@@ -72,7 +72,7 @@ LSAdata_long <- LSAdata_long %>%
 
 ## BoxPlot (by formula)
 
-If the data model has benn setup correctly we can make a boxplot and it should have the right factor order (now, are the variables factors?) and if the plot looks "right" then we can assume that que data has the required form.  
+If the data model has been setup correctly we can make a `boxplot` and it should have the right factor order (now, are the variables factors?) and if the plot looks "right" then we can assume that the data has the required form.  
 The easiest way is the simplest plot using a `boxplot` with the model of our data. 
 
 ```{r}
@@ -104,8 +104,8 @@ Anova(LSAdata_aov)
 summary(LSAdata_aov)
 ```
 
-## Post Hoc estimation  
-In the context of null hypotesis, the ANOVA model significance testing only indicates there is at least one factor (or more) average is different from the rest, we still need to do a *post hoc* multiple comparison test, like a Tukey Honesty Significant Difference HSD test (w-procedure). After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another.  There are different *post hoc* types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett's tests. It is well known that conducting several post hoc analyses carries the risk of dramatically inflate the probability of a type I error -concluding there is some sort of effect when in fact there is none.      
+# Post Hoc estimation  
+In the context of null hypothesis, the ANOVA model significance testing only indicates there is at least one factor (or more) average is different from the rest, we still need to do a *post hoc* multiple comparison test, like a Tukey Honesty Significant Difference HSD test (w-procedure). After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another.  There are different *post hoc* types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett's tests. It is well known that conducting several post hoc analyses carries the risk of dramatically inflate the probability of a type I error -concluding there is some sort of effect when in fact there is none.      
 The library `emmeans` has a function to estimate the Tukey and 95% confidence intervals first the pairwise comparisons with the Control group and contrasts, and then we will compare each cancer condition to control to show if the averages are significant different. If the call to emmeans is with the factor `pairwise` emmeans function estimates a Tukey HSD pairwise for all the factor levels. If the call to emmeans is made with treatment vs. control the function estimates a Dunnett's test comparing the control average (first factor) to the rest, to determine the significant difference.  
 
 ```{r}
@@ -124,5 +124,37 @@ library(rstatix)
 
 LSAdata.aov_test <- LSAdata_long %>% anova_test(LSA ~ Type, effect.size = "ges", detailed = TRUE)
 get_anova_table(LSAdata.aov_test)
+
+# with emmeans
+LSAdata_long %>% emmeans_test(LSA ~ Type, p.adjust.method = "fdr", detailed = TRUE)
 ```
 
+## Non parametric tests  
+Now we can analyze the same data using non-parametric tests. For substitute of a one-Way ANOVA we use Kruskal-Wallis to estimate the effects size and to estimate a post hoc pairwise multiple comparisons we execute a Dunn test, this test is based in a pairwise comparison of the ranked data, and te mean rank of the different group is compared all from the `rstatix` library. The Dunn test used to follow a Kruskal-Wallis test.  
+
+```{r}
+res.kruskal <- LSAdata_long %>% kruskal_test(LSA ~ Type)
+res.kruskal
+
+# And estimate the Kruskal effect size
+LSAdata_long %>% kruskal_effsize(LSA ~ Type)
+
+# To estimate the pairwise corrected by multiple comparisons the Dunn's Test
+pc_LSAdata <- LSAdata_long %>% dunn_test(LSA ~ Type, p.adjust.method = "fdr")
+pc_LSAdata
+
+```
+
+# Permutation  
+Finally we do a different test, a permutation estimation for the effect size using a conditional inference procedure. For this example the test function is he `oneway_test` from de `coin` library.
+
+```{r}
+# load coin library for estimating permutations
+library(coin)
+# Permutations, using the coin package
+set.seed(1234)
+LSAdata_aovp <- oneway_test(LSA ~ Type, data=LSAdata_long,
+                  distribution=approximate(nresample=9999))
+LSAdata_aovp
+pvalue(LSAdata_aovp, method="global")
+```

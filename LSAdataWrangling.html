@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios" />
     
-        <meta name="date" content="2021-09-03" />
+        <meta name="date" content="2021-09-04" />
     
     <title>LSAdata OneWay ANOVA</title>
 
@@ -203,13 +203,18 @@
       <li><a href="#one-way-anova-model-estimation">One-way ANOVA model estimation</a>
       <ul>
       <li><a href="#simple-model-estimation">Simple model estimation</a></li>
-      <li><a href="#post-hoc-estimation">Post Hoc estimation</a></li>
       </ul></li>
+      <li><a href="#post-hoc-estimation">Post Hoc estimation</a>
+      <ul>
+      <li><a href="#model-estimation-and-post-hoc-estimate-using-rstatix-library">Model estimation and post hoc estimate using rstatix library</a></li>
+      <li><a href="#non-parametric-tests">Non parametric tests</a></li>
+      </ul></li>
+      <li><a href="#permutation">Permutation</a></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> F.A. Barrios</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2021-09-03</p>
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2021-09-04</p>
           </div>
    </div>
      
@@ -249,7 +254,7 @@ Refer to the serum lipid-bound sialic acid data on 1400 subjects (LSADATA). We w
  9     9  18    20.3  22.2  25.1
 10    10  20.9  22.6  18.8  25.3
 # … with 340 more rows</code></pre>
-<p>Froma the raw data file the format is a tibble with variables for column and data point by rows, nevertheless to excecute a one-way ANOVA we need to <a href="https://en.wikipedia.org/wiki/Data_wrangling">wrangle</a> the data. Start by changing the column names according to the LDS problem description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)<br />
+<p>From the raw data file the format is a tibble with variables for column and data point by rows, nevertheless to execute a one-way ANOVA we need to <a href="https://en.wikipedia.org/wiki/Data_wrangling">wrangle</a> the data. Start by changing the column names according to the LDS problem description: Subject_number:Col1, Controls:Col2 patients with benign breast disease (BBD):Col3, patients with primary breast cancer (PBC):Col4 patients with recurrent metastatic breast cancer (RMBC)<br />
 The original data is in table form and we need to change it to “long” format. And then to do the ANOVA we need to make the <code>Type</code> of cancer variable a factor and then re-level to group and compare to `Cont.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>LSAdata <span class="ot">&lt;-</span> LSAdata <span class="sc">%&gt;%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Subj =</span> Col1, <span class="at">Cont =</span> Col2, <span class="at">BBD =</span> Col3, <span class="at">PBC =</span> Col4, <span class="at">RMBC =</span> Col5)</span>
@@ -313,7 +318,7 @@ The original data is in table form and we need to change it to “long” format
 </div>
 <div id="boxplot-by-formula" class="section level2">
 <h2>BoxPlot (by formula)</h2>
-<p>If the data model has benn setup correctly we can make a boxplot and it should have the right factor order (now, are the variables factors?) and if the plot looks “right” then we can assume that que data has the required form.<br />
+<p>If the data model has been setup correctly we can make a <code>boxplot</code> and it should have the right factor order (now, are the variables factors?) and if the plot looks “right” then we can assume that the data has the required form.<br />
 The easiest way is the simplest plot using a <code>boxplot</code> with the model of our data.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># boxplot(LSA ~ Type, data = LSAdata_long)</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nicer</span></span>
@@ -362,9 +367,10 @@ Residuals   1396  12233     8.8
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
-<div id="post-hoc-estimation" class="section level2">
-<h2>Post Hoc estimation</h2>
-<p>In the context of null hypotesis, the ANOVA model significance testing only indicates there is at least one factor (or more) average is different from the rest, we still need to do a **post hoc<em>multiple comparison test, like a Tukey Honesty Significant Difference HSD test (w-procedure). After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another. There are different </em>post hoc* types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett’s tests. It is well known that conducting several post hoc analyses carries the risk of dramatically inflate the probability of a type I error -concluding there is some sort of effect when in fact there is none.<br />
+</div>
+<div id="post-hoc-estimation" class="section level1">
+<h1>Post Hoc estimation</h1>
+<p>In the context of null hypothesis, the ANOVA model significance testing only indicates there is at least one factor (or more) average is different from the rest, we still need to do a <em>post hoc</em> multiple comparison test, like a Tukey Honesty Significant Difference HSD test (w-procedure). After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another. There are different <em>post hoc</em> types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett’s tests. It is well known that conducting several post hoc analyses carries the risk of dramatically inflate the probability of a type I error -concluding there is some sort of effect when in fact there is none.<br />
 The library <code>emmeans</code> has a function to estimate the Tukey and 95% confidence intervals first the pairwise comparisons with the Control group and contrasts, and then we will compare each cancer condition to control to show if the averages are significant different. If the call to emmeans is with the factor <code>pairwise</code> emmeans function estimates a Tukey HSD pairwise for all the factor levels. If the call to emmeans is made with treatment vs. control the function estimates a Dunnett’s test comparing the control average (first factor) to the rest, to determine the significant difference.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -406,6 +412,8 @@ $contrasts
  RMBC - Cont     7.01 0.224 1396  31.347  &lt;.0001
 
 P value adjustment: dunnettx method for 3 tests </code></pre>
+<div id="model-estimation-and-post-hoc-estimate-using-rstatix-library" class="section level2">
+<h2>Model estimation and post hoc estimate using rstatix library</h2>
 <p>Next following with the examples, using the tibble friendly <code>rstatix</code> library (wrappers for statistical tests in R), the ANOVA models are estimated with the <code>anova_test</code></p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -415,7 +423,68 @@ P value adjustment: dunnettx method for 3 tests </code></pre>
 
   Effect      SSn      SSd DFn  DFd       F         p p&lt;.05   ges
 1   Type 8683.918 12232.88   3 1396 330.332 4.72e-162     * 0.415</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># with emmeans</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>LSAdata_long <span class="sc">%&gt;%</span> <span class="fu">emmeans_test</span>(LSA <span class="sc">~</span> Type, <span class="at">p.adjust.method =</span> <span class="st">&quot;fdr&quot;</span>, <span class="at">detailed =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code># A tibble: 6 × 14
+  term  .y.   group1 group2 null.value estimate    se    df conf.low conf.high
+* &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 Type  LSA   Cont   BBD             0  -3.95   0.224  1396   -4.39     -3.51 
+2 Type  LSA   Cont   PBC             0  -3.98   0.224  1396   -4.42     -3.54 
+3 Type  LSA   Cont   RMBC            0  -7.01   0.224  1396   -7.45     -6.58 
+4 Type  LSA   BBD    PBC             0  -0.0271 0.224  1396   -0.466     0.412
+5 Type  LSA   BBD    RMBC            0  -3.06   0.224  1396   -3.50     -2.63 
+6 Type  LSA   PBC    RMBC            0  -3.04   0.224  1396   -3.48     -2.60 
+# … with 4 more variables: statistic &lt;dbl&gt;, p &lt;dbl&gt;, p.adj &lt;dbl&gt;,
+#   p.adj.signif &lt;chr&gt;</code></pre>
 </div>
+<div id="non-parametric-tests" class="section level2">
+<h2>Non parametric tests</h2>
+<p>Now we can analyze the same data using non-parametric tests. For substitute of a one-Way ANOVA we use Kruskal-Wallis to estimate the effects size and to estimate a post hoc pairwise multiple comparisons we execute a Dunn test, this test is based in a pairwise comparison of the ranked data, and te mean rank of the different group is compared all from the <code>rstatix</code> library. The Dunn test used to follow a Kruskal-Wallis test.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>res.kruskal <span class="ot">&lt;-</span> LSAdata_long <span class="sc">%&gt;%</span> <span class="fu">kruskal_test</span>(LSA <span class="sc">~</span> Type)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>res.kruskal</span></code></pre></div>
+<pre><code># A tibble: 1 × 6
+  .y.       n statistic    df         p method        
+* &lt;chr&gt; &lt;int&gt;     &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt; &lt;chr&gt;         
+1 LSA    1400      583.     3 4.31e-126 Kruskal-Wallis</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># And estimate the Kruskal effect size</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>LSAdata_long <span class="sc">%&gt;%</span> <span class="fu">kruskal_effsize</span>(LSA <span class="sc">~</span> Type)</span></code></pre></div>
+<pre><code># A tibble: 1 × 5
+  .y.       n effsize method  magnitude
+* &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;ord&gt;    
+1 LSA    1400   0.416 eta2[H] large    </code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To estimate the pairwise corrected by multiple comparisons the Dunn&#39;s Test</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>pc_LSAdata <span class="ot">&lt;-</span> LSAdata_long <span class="sc">%&gt;%</span> <span class="fu">dunn_test</span>(LSA <span class="sc">~</span> Type, <span class="at">p.adjust.method =</span> <span class="st">&quot;fdr&quot;</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>pc_LSAdata</span></code></pre></div>
+<pre><code># A tibble: 6 × 9
+  .y.   group1 group2    n1    n2 statistic         p     p.adj p.adj.signif
+* &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       
+1 LSA   Cont   BBD      350   350   13.6    6.48e- 42 1.94e- 41 ****        
+2 LSA   Cont   PBC      350   350   13.5    1.35e- 41 2.69e- 41 ****        
+3 LSA   Cont   RMBC     350   350   24.1    7.24e-128 4.34e-127 ****        
+4 LSA   BBD    PBC      350   350   -0.0537 9.57e-  1 9.57e-  1 ns          
+5 LSA   BBD    RMBC     350   350   10.5    9.49e- 26 1.14e- 25 ****        
+6 LSA   PBC    RMBC     350   350   10.5    5.36e- 26 8.05e- 26 ****        </code></pre>
+</div>
+</div>
+<div id="permutation" class="section level1">
+<h1>Permutation</h1>
+<p>Finally we do a different test, a permutation estimation for the effect size using a conditional inference procedure. For this example the test function is he <code>oneway_test</code> from de <code>coin</code> library.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load coin library for estimating permutations</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coin)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutations, using the coin package</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>LSAdata_aovp <span class="ot">&lt;-</span> <span class="fu">oneway_test</span>(LSA <span class="sc">~</span> Type, <span class="at">data=</span>LSAdata_long,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distribution=</span><span class="fu">approximate</span>(<span class="at">nresample=</span><span class="dv">9999</span>))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>LSAdata_aovp</span></code></pre></div>
+<pre><code>
+    Approximative K-Sample Fisher-Pitman Permutation Test
+
+data:  LSA by Type (Cont, BBD, PBC, RMBC)
+chi-squared = 580.82, p-value &lt; 1e-04</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(LSAdata_aovp, <span class="at">method=</span><span class="st">&quot;global&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &lt;0.00010001
+99 percent confidence interval:
+ 0.0000000000 0.0005297444 </code></pre>
 </div>
 </div>
 

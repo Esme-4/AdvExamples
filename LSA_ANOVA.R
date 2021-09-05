@@ -72,7 +72,7 @@ get_anova_table(LSAdata.aov)
 LSAdata_long %>% emmeans_test(LSA ~ Type, p.adjust.method = "fdr", detailed = TRUE)
 
 # Now the same using non-parametric tests. For a one-Way ANOVA we use Kruskal-Wallis
-# and effects size and Dunn test all from the rstatistix library
+# and effects size and Dunn test all from the rstatix library
 res.kruskal <- LSAdata_long %>% kruskal_test(LSA ~ Type)
 res.kruskal
 
