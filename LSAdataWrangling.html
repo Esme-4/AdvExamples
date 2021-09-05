@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios" />
     
-        <meta name="date" content="2021-08-28" />
+        <meta name="date" content="2021-09-03" />
     
     <title>LSAdata OneWay ANOVA</title>
 
@@ -209,7 +209,7 @@
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> F.A. Barrios</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2021-08-28</p>
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2021-09-03</p>
           </div>
    </div>
      
@@ -364,11 +364,11 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 </div>
 <div id="post-hoc-estimation" class="section level2">
 <h2>Post Hoc estimation</h2>
-<p>After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another. There are different <em>post hoc</em> types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett’s tests.<br />
+<p>In the context of null hypotesis, the ANOVA model significance testing only indicates there is at least one factor (or more) average is different from the rest, we still need to do a **post hoc<em>multiple comparison test, like a Tukey Honesty Significant Difference HSD test (w-procedure). After running an ANOVA model estimation the next step is to determine which group means are significantly different from one another. There are different </em>post hoc* types of tests, the most common for parametric estimation of the model are Tukey HSD and Dunnett’s tests. It is well known that conducting several post hoc analyses carries the risk of dramatically inflate the probability of a type I error -concluding there is some sort of effect when in fact there is none.<br />
 The library <code>emmeans</code> has a function to estimate the Tukey and 95% confidence intervals first the pairwise comparisons with the Control group and contrasts, and then we will compare each cancer condition to control to show if the averages are significant different. If the call to emmeans is with the factor <code>pairwise</code> emmeans function estimates a Tukey HSD pairwise for all the factor levels. If the call to emmeans is made with treatment vs. control the function estimates a Dunnett’s test comparing the control average (first factor) to the rest, to determine the significant difference.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Use emmeans to look for estimating the Tukey and 95% confidence intervals</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Use emmeans to look for estimating the Tukey with 95% confidence intervals and Dunnett&#39;s test</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(LSAdata_lm, pairwise <span class="sc">~</span> Type)</span></code></pre></div>
 <pre><code>$emmeans
  Type emmean    SE   df lower.CL upper.CL
@@ -406,6 +406,15 @@ $contrasts
  RMBC - Cont     7.01 0.224 1396  31.347  &lt;.0001
 
 P value adjustment: dunnettx method for 3 tests </code></pre>
+<p>Next following with the examples, using the tibble friendly <code>rstatix</code> library (wrappers for statistical tests in R), the ANOVA models are estimated with the <code>anova_test</code></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>LSAdata.aov_test <span class="ot">&lt;-</span> LSAdata_long <span class="sc">%&gt;%</span> <span class="fu">anova_test</span>(LSA <span class="sc">~</span> Type, <span class="at">effect.size =</span> <span class="st">&quot;ges&quot;</span>, <span class="at">detailed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">get_anova_table</span>(LSAdata.aov_test)</span></code></pre></div>
+<pre><code>ANOVA Table (type II tests)
+
+  Effect      SSn      SSd DFn  DFd       F         p p&lt;.05   ges
+1   Type 8683.918 12232.88   3 1396 330.332 4.72e-162     * 0.415</code></pre>
 </div>
 </div>
 </div>
