@@ -146,15 +146,45 @@ pc_LSAdata
 ```
 
 # Permutation  
-Finally we do a different test, a permutation estimation for the effect size using a conditional inference procedure. For this example the test function is he `oneway_test` from de `coin` library.
+Finally we do a different test, a permutation estimation for the effect size using a conditional inference procedure. For this example the test function the `coin` library for general model testing is `independence_test`, and the post hoc option is passed using the xtrafo with the mcp_trafo function. In this case the xvariable is `Type`.
 
 ```{r}
 # load coin library for estimating permutations
 library(coin)
 # Permutations, using the coin package
 set.seed(1234)
+LSAdata_perm <- independence_test(LSA ~ Type, data=LSAdata_long, 
+                                  distribution = approximate(nresample = 10000), 
+                                  xtrafo = mcp_trafo(Type = "Tukey"))
+# results
+LSAdata_perm
+
+# and the post hoc with subset pivotality condition violated
+pvalue(LSAdata_perm, method="step-down")
+```
+
+The 
+```{r}
+
 LSAdata_aovp <- oneway_test(LSA ~ Type, data=LSAdata_long,
-                  distribution=approximate(nresample=9999))
+                  distribution=approximate(nresample=10000))
 LSAdata_aovp
-pvalue(LSAdata_aovp, method="global")
+
+pvalue(LSAdata_aovp, method="step-down")
+```
+
+## Really nice graphics
+Now a really nice solution with nice well designed violin plots and corrected comparisons. Thanks to the really nice library `ggstatsplot`.
+
+```{r}
+library(ggstatsplot)
+
+ggbetweenstats( data = LSAdata_long, 
+                x = Type, 
+                y = LSA, 
+                type = "p", 
+                pairwise.display = "s", 
+                p.adjust.method = "fdr", 
+                outlier.tagging = TRUE, 
+                title = "Measurement of serum lipid-bound sialic acid (LSA)" )
 ```

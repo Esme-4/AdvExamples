@@ -92,7 +92,7 @@ LSAdata_aovp
 statistic(LSAdata_aovp) 
 pvalue(LSAdata_aovp, method="global")
 
-# Now a really nice solution with vilolin plots and corrected comparisons
+# Now a really nice solution with violin plots and corrected comparisons
 # Thanks to the really nice library ggstatsplot
 library(ggstatsplot)
 
