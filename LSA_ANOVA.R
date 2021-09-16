@@ -79,9 +79,11 @@ res.kruskal
 # And estimate the Kruskal effect size
 LSAdata_long %>% kruskal_effsize(LSA ~ Type)
 # To estimate the pairwise corrected by multiple comparisons the Dunn's Test
-pc_LSAdata <- LSAdata_long %>% dunn_test(LSA ~ Type, p.adjust.method = "fdr")
+pc_LSAdata <- LSAdata_long %>% dunn_test(LSA ~ Type, p.adjust.method = "bonferroni")
 pc_LSAdata
 
+# and compared to the control
+ctrl_LSAdata <- LSAdata_long %>% wilcox_test(LSA ~ Type, p.adjust.method = "bonferroni")
 # load coin library for estimating permutations
 library(coin)
 # Permutations, using the coin package

@@ -1,0 +1,110 @@
+---
+title: "Example from the Chaper 8 Daniel"
+author: "F.A. Barrios"
+ipsum_meta:
+  og_url: "https\\://example.com/open/graph/finalURLfor/this"
+  og_description: "A modest size description of the content"
+  og_image: "https\\://example.com/open/graph/imageURLfor/this"
+output: 
+  hrbrthemes::ipsum:
+    toc: true
+---
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.retina=2)
+```
+
+```{r ipsum_setup, message=FALSE, warning=FALSE, cache=FALSE, echo=FALSE}
+library(hrbrthemes)
+library(tidyverse)
+
+update_geom_font_defaults(font_rc)
+```
+# Example from the Chaper 8 Daniel  
+Licciardone et al. examined subjects with chronic, nonspecific low back pain. In this study, 18 of the subjects completed a survey questionnaire assessing physical functioning at baseline, and after 1, 3, and 6 months. File EXA_C08_S04_01.csv includes the data for these subjects who received a sham treatment that appeared to be genuine osteopathic manipulation. Higher values indicate better physical functioning. The goal of the experiment was to determine if subjects would report improvement over time even though the treatment they received would provide minimal improvement. We wish to know if there is a difference in the mean survey values among the four points in time.  
+
+## Data wrangling  
+Loading the dataset we notice that it is in table format and need to be changed to 'longer' format using the `pivot_longer` and selecting the variables and setting the subject lavel appart, since the subject lavel is used for the repeated measures ANOVA  
+
+```{r}
+library(tidyverse)
+#
+chronPain <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/EXA_C08_S04_01.csv", col_names = TRUE, show_col_types = FALSE)
+
+chronPain_long <- chronPain %>%
+  pivot_longer(cols = Baseline:Month6, names_to = "Treatment", values_to = "APhFq")
+
+chronPain_long
+
+chronPain_long <- chronPain_long %>%
+  mutate( Subject = factor(Subject), Treatment = factor(Treatment) )
+
+chronPain_long <- chronPain_long %>%
+  mutate( Treatment = Treatment %>% fct_relevel("Baseline","Month1","Month3","Month6") )
+
+# A boxplot
+chronPain_long %>% ggplot(aes(x = Treatment, y = APhFq)) +
+    geom_boxplot() +
+    geom_jitter(aes(colour = Treatment), shape = 16, position = position_jitter(seed = 123)) +
+    labs(title = "Responces to Assessing Physical Functioning questionaire (APhFq)") +
+    theme_bw()
+
+```
+
+## Repated Measures ANOVA model  
+We will estimate the model with the base library `aov()` function and the `emmeans` function to estimate the *post hoc* adjusted probability values and the pairwise differences (Tukey) and plots.     
+
+```{r}
+#
+# first load the missing libraries
+library(car)
+library(emmeans)
+
+# Testing for outliers
+chronPain_long %>% 
+  group_by(Treatment) %>% 
+  identify_outliers(APhFq)
+
+# Test normal distribution
+chronPain_long %>% 
+  group_by(Treatment) %>% 
+  shapiro_test(APhFq)
+
+chronPain_long %>% 
+  group_by(Treatment) %>% 
+  ggplot(aes(sample = APhFq)) +
+  geom_qq() +
+  geom_qq_line(color = "blue")
+
+# With the aov R function
+(chronPain_long_aov <- aov( APhFq ~ Treatment + Error(Subject/Treatment), data = chronPain_long ))
+#
+summary(chronPain_long_aov)
+
+# To estimate the pairwise post hoc
+emm_aov <- emmeans(chronPain_long_aov, ~ Treatment)
+pairs(emm_aov)
+pwpm(emm_aov)
+plot(emm_aov, comparisons = TRUE)
+```
+
+## Using the `rstatix`  
+For using the anova function of `rstatix` library, the data can be "piped" and the *post hoc* handling is more complicated, the paiered t-test is used the estimate de adjusted differences.  
+
+```{r}
+library(rstatix)
+
+# ANOVA test from the rstatix pack
+chronPain_long_aTest <- chronPain_long %>% anova_test(dv = APhFq, wid = Subject, within = Treatment)
+get_anova_table(chronPain_long_aTest)
+# Pairwise comparisons
+paired_chronPain <- chronPain_long %>% 
+  pairwise_t_test(APhFq ~ Treatment , paired = TRUE, p.adjust.method = "bonferroni")
+
+data.frame(paired_chronPain)
+# # # # # # # # # # # # # # # # # # # 
+```
+
+```{r bib, include=FALSE}
+# KEEP THIS AT THE END OF THE DOCUMENT TO GENERATE A LOCAL bib FILE FOR PKGS USED
+knitr::write_bib(sub("^package:", "", grep("package", search(), value=TRUE)), file='skeleton.bib')
+```
