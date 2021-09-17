@@ -85,17 +85,16 @@ paired_chronPain <- chronPain_long %>%
 
 tibble(paired_chronPain)
 
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # #
 ```
 
-## For a nonparametric example we execute a Friedman test
+## For a nonparametric example we execute a Friedman test  
 
 ```{r}
-
+# Nonparametric
 nonp_chronPain <- chronPain_long %>%
   friedman_test( APhFq ~ Time|Subject )
 
 nonp_chronPain
-
 ```
 

@@ -278,12 +278,13 @@ tibble(paired_chronPain)
     ## 6 APhFq Month3   Month6    18    18     1.40     17 0.18  1     ns
 
 ``` r
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # #
 ```
 
 ## For a nonparametric example we execute a Friedman test
 
 ``` r
+# Nonparametric
 nonp_chronPain <- chronPain_long %>%
   friedman_test( APhFq ~ Time|Subject )
 
