@@ -41,37 +41,37 @@ library(tidyverse)
 chronPain <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/EXA_C08_S04_01.csv", col_names = TRUE, show_col_types = FALSE)
 
 chronPain_long <- chronPain %>%
-  pivot_longer(cols = Baseline:Month6, names_to = "Treatment", values_to = "APhFq")
+  pivot_longer(cols = Baseline:Month6, names_to = "Time", values_to = "APhFq")
 
 chronPain_long
 ```
 
     ## # A tibble: 72 × 3
-    ##    Subject Treatment APhFq
-    ##      <dbl> <chr>     <dbl>
-    ##  1       1 Baseline     80
-    ##  2       1 Month1       60
-    ##  3       1 Month3       95
-    ##  4       1 Month6      100
-    ##  5       2 Baseline     95
-    ##  6       2 Month1       90
-    ##  7       2 Month3       95
-    ##  8       2 Month6       95
-    ##  9       3 Baseline     65
-    ## 10       3 Month1       55
+    ##    Subject Time     APhFq
+    ##      <dbl> <chr>    <dbl>
+    ##  1       1 Baseline    80
+    ##  2       1 Month1      60
+    ##  3       1 Month3      95
+    ##  4       1 Month6     100
+    ##  5       2 Baseline    95
+    ##  6       2 Month1      90
+    ##  7       2 Month3      95
+    ##  8       2 Month6      95
+    ##  9       3 Baseline    65
+    ## 10       3 Month1      55
     ## # … with 62 more rows
 
 ``` r
 chronPain_long <- chronPain_long %>%
-  mutate( Subject = factor(Subject), Treatment = factor(Treatment) )
+  mutate( Subject = factor(Subject), Time = factor(Time) )
 
 chronPain_long <- chronPain_long %>%
-  mutate( Treatment = Treatment %>% fct_relevel("Baseline","Month1","Month3","Month6") )
+  mutate( Time = Time %>% fct_relevel("Baseline","Month1","Month3","Month6") )
 
 # A boxplot
-chronPain_long %>% ggplot(aes(x = Treatment, y = APhFq)) +
+chronPain_long %>% ggplot(aes(x = Time, y = APhFq)) +
     geom_boxplot() +
-    geom_jitter(aes(colour = Treatment), shape = 16, position = position_jitter(seed = 123)) +
+    geom_jitter(aes(colour = Time), shape = 16, position = position_jitter(seed = 123)) +
     labs(title = "Responces to Assessing Physical Functioning questionaire (APhFq)") +
     theme_bw()
 ```
@@ -117,34 +117,34 @@ library(rstatix)
 ``` r
 # Testing for outliers
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(Time) %>% 
   identify_outliers(APhFq)
 ```
 
     ## # A tibble: 2 × 5
-    ##   Treatment Subject APhFq is.outlier is.extreme
-    ##   <fct>     <fct>   <dbl> <lgl>      <lgl>     
-    ## 1 Month3    16         20 TRUE       FALSE     
-    ## 2 Month6    16         25 TRUE       FALSE
+    ##   Time   Subject APhFq is.outlier is.extreme
+    ##   <fct>  <fct>   <dbl> <lgl>      <lgl>     
+    ## 1 Month3 16         20 TRUE       FALSE     
+    ## 2 Month6 16         25 TRUE       FALSE
 
 ``` r
 # Test normal distribution
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(Time) %>% 
   shapiro_test(APhFq)
 ```
 
     ## # A tibble: 4 × 4
-    ##   Treatment variable statistic      p
-    ##   <fct>     <chr>        <dbl>  <dbl>
-    ## 1 Baseline  APhFq        0.900 0.0568
-    ## 2 Month1    APhFq        0.960 0.611 
-    ## 3 Month3    APhFq        0.884 0.0303
-    ## 4 Month6    APhFq        0.935 0.235
+    ##   Time     variable statistic      p
+    ##   <fct>    <chr>        <dbl>  <dbl>
+    ## 1 Baseline APhFq        0.900 0.0568
+    ## 2 Month1   APhFq        0.960 0.611 
+    ## 3 Month3   APhFq        0.884 0.0303
+    ## 4 Month6   APhFq        0.935 0.235
 
 ``` r
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(Time) %>% 
   ggplot(aes(sample = APhFq)) +
   geom_qq() +
   geom_qq_line(color = "blue")
@@ -154,12 +154,12 @@ chronPain_long %>%
 
 ``` r
 # With the aov R function
-(chronPain_long_aov <- aov( APhFq ~ Treatment + Error(Subject/Treatment), data = chronPain_long ))
+(chronPain_long_aov <- aov( APhFq ~ Time + Error(Subject/Time), data = chronPain_long ))
 ```
 
     ## 
     ## Call:
-    ## aov(formula = APhFq ~ Treatment + Error(Subject/Treatment), data = chronPain_long)
+    ## aov(formula = APhFq ~ Time + Error(Subject/Time), data = chronPain_long)
     ## 
     ## Grand Mean: 66.25
     ## 
@@ -172,18 +172,25 @@ chronPain_long %>%
     ## 
     ## Residual standard error: 34.50277
     ## 
-    ## Stratum 2: Subject:Treatment
+    ## Stratum 2: Subject:Time
     ## 
     ## Terms:
-    ##                 Treatment Residuals
-    ## Sum of Squares   2395.833  7404.167
-    ## Deg. of Freedom         3        51
+    ##                     Time Residuals
+    ## Sum of Squares  2395.833  7404.167
+    ## Deg. of Freedom        3        51
     ## 
     ## Residual standard error: 12.04906
     ## Estimated effects may be unbalanced
 
 ``` r
 #
+anova_summary(chronPain_long_aov)
+```
+
+    ##   Effect DFn DFd     F     p p<.05   ges
+    ## 1   Time   3  51 5.501 0.002     * 0.244
+
+``` r
 summary(chronPain_long_aov)
 ```
 
@@ -192,16 +199,16 @@ summary(chronPain_long_aov)
     ##           Df Sum Sq Mean Sq F value Pr(>F)
     ## Residuals 17  20238    1190               
     ## 
-    ## Error: Subject:Treatment
+    ## Error: Subject:Time
     ##           Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## Treatment  3   2396   798.6   5.501 0.00237 **
+    ## Time       3   2396   798.6   5.501 0.00237 **
     ## Residuals 51   7404   145.2                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # To estimate the pairwise post hoc
-emm_aov <- emmeans(chronPain_long_aov, ~ Treatment)
+emm_aov <- emmeans(chronPain_long_aov, ~ Time)
 ```
 
     ## Note: re-fitting model with sum-to-zero contrasts
@@ -230,7 +237,7 @@ pwpm(emm_aov)
     ## Month3     -11.67 -14.17 [73.6] 0.8053
     ## Month6      -8.06 -10.56   3.61 [70.0]
     ## 
-    ## Row and column labels: Treatment
+    ## Row and column labels: Time
     ## Upper triangle: P values   adjust = "tukey"
     ## Diagonal: [Estimates] (emmean) 
     ## Lower triangle: Comparisons (estimate)   earlier vs. later
@@ -243,31 +250,47 @@ plot(emm_aov, comparisons = TRUE)
 
 ``` r
 # ANOVA test from the rstatix pack
-chronPain_long_aTest <- chronPain_long %>% anova_test(dv = APhFq, wid = Subject, within = Treatment)
+chronPain_long_aTest <- chronPain_long %>% anova_test(dv = APhFq, wid = Subject, within = Time)
 get_anova_table(chronPain_long_aTest)
 ```
 
     ## ANOVA Table (type III tests)
     ## 
-    ##      Effect  DFn   DFd     F     p p<.05  ges
-    ## 1 Treatment 2.22 37.68 5.501 0.006     * 0.08
+    ##   Effect  DFn   DFd     F     p p<.05  ges
+    ## 1   Time 2.22 37.68 5.501 0.006     * 0.08
 
 ``` r
 # Pairwise comparisons
 paired_chronPain <- chronPain_long %>% 
-  pairwise_t_test(APhFq ~ Treatment , paired = TRUE, p.adjust.method = "bonferroni")
+  pairwise_t_test(APhFq ~ Time , paired = TRUE, p.adjust.method = "bonferroni")
 
-data.frame(paired_chronPain)
+tibble(paired_chronPain)
 ```
 
-    ##     .y.   group1 group2 n1 n2  statistic df     p p.adj p.adj.signif
-    ## 1 APhFq Baseline Month1 18 18  0.6583523 17 0.519 1.000           ns
-    ## 2 APhFq Baseline Month3 18 18 -2.7150841 17 0.015 0.088           ns
-    ## 3 APhFq Baseline Month6 18 18 -1.7468985 17 0.099 0.592           ns
-    ## 4 APhFq   Month1 Month3 18 18 -3.8643409 17 0.001 0.007           **
-    ## 5 APhFq   Month1 Month6 18 18 -2.2237818 17 0.040 0.240           ns
-    ## 6 APhFq   Month3 Month6 18 18  1.3984821 17 0.180 1.000           ns
+    ## # A tibble: 6 × 10
+    ##   .y.   group1   group2    n1    n2 statistic    df     p p.adj p.adj.signif
+    ##   <chr> <chr>    <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
+    ## 1 APhFq Baseline Month1    18    18     0.658    17 0.519 1     ns          
+    ## 2 APhFq Baseline Month3    18    18    -2.72     17 0.015 0.088 ns          
+    ## 3 APhFq Baseline Month6    18    18    -1.75     17 0.099 0.592 ns          
+    ## 4 APhFq Month1   Month3    18    18    -3.86     17 0.001 0.007 **          
+    ## 5 APhFq Month1   Month6    18    18    -2.22     17 0.04  0.24  ns          
+    ## 6 APhFq Month3   Month6    18    18     1.40     17 0.18  1     ns
 
 ``` r
 # # # # # # # # # # # # # # # # # # # 
 ```
+
+## For a nonparametric example we execute a Friedman test
+
+``` r
+nonp_chronPain <- chronPain_long %>%
+  friedman_test( APhFq ~ Time|Subject )
+
+nonp_chronPain
+```
+
+    ## # A tibble: 1 × 6
+    ##   .y.       n statistic    df       p method       
+    ## * <chr> <int>     <dbl> <dbl>   <dbl> <chr>        
+    ## 1 APhFq    18      12.2     3 0.00661 Friedman test
