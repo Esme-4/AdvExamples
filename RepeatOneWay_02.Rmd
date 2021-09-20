@@ -81,6 +81,7 @@ summary(chronPain_long_aov)
 
 # To estimate the pairwise post hoc
 emm_aov <- emmeans(chronPain_long_aov, ~ TreatmentT)
+
 pairs(emm_aov)
 pwpm(emm_aov)
 plot(emm_aov, comparisons = TRUE)
