@@ -32,20 +32,20 @@ library(tidyverse)
 chronPain <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/EXA_C08_S04_01.csv", col_names = TRUE, show_col_types = FALSE)
 
 chronPain_long <- chronPain %>%
-  pivot_longer(cols = Baseline:Month6, names_to = "Treatment", values_to = "APhFq")
+  pivot_longer(cols = Baseline:Month6, names_to = "TreatmentT", values_to = "APhFq")
 
 chronPain_long
 
 chronPain_long <- chronPain_long %>%
-  mutate( Subject = factor(Subject), Treatment = factor(Treatment) )
+  mutate( Subject = factor(Subject), TreatmentT = factor(TreatmentT) )
 
 chronPain_long <- chronPain_long %>%
-  mutate( Treatment = Treatment %>% fct_relevel("Baseline","Month1","Month3","Month6") )
+  mutate( TreatmentT = TreatmentT %>% fct_relevel("Baseline","Month1","Month3","Month6") )
 
 # A boxplot
-chronPain_long %>% ggplot(aes(x = Treatment, y = APhFq)) +
+chronPain_long %>% ggplot(aes(x = TreatmentT, y = APhFq)) +
     geom_boxplot() +
-    geom_jitter(aes(colour = Treatment), shape = 16, position = position_jitter(seed = 123)) +
+    geom_jitter(aes(colour = TreatmentT), shape = 16, position = position_jitter(seed = 123)) +
     labs(title = "Responces to Assessing Physical Functioning questionaire (APhFq)") +
     theme_bw()
 
@@ -63,27 +63,27 @@ library(rstatix)
 
 # Testing for outliers
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(TreatmentT) %>% 
   identify_outliers(APhFq)
 
 # Test normal distribution
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(TreatmentT) %>% 
   shapiro_test(APhFq)
 
 chronPain_long %>% 
-  group_by(Treatment) %>% 
+  group_by(TreatmentT) %>% 
   ggplot(aes(sample = APhFq)) +
   geom_qq() +
   geom_qq_line(color = "blue")
 
 # With the aov R function
-(chronPain_long_aov <- aov( APhFq ~ Treatment + Error(Subject/Treatment), data = chronPain_long ))
+(chronPain_long_aov <- aov( APhFq ~ TreatmentT + Error(Subject/TreatmentT), data = chronPain_long ))
 #
 summary(chronPain_long_aov)
 
 # To estimate the pairwise post hoc
-emm_aov <- emmeans(chronPain_long_aov, ~ Treatment)
+emm_aov <- emmeans(chronPain_long_aov, ~ TreatmentT)
 pairs(emm_aov)
 pwpm(emm_aov)
 plot(emm_aov, comparisons = TRUE)
@@ -95,33 +95,14 @@ For using the anova function of `rstatix` library, the data can be "piped" and t
 ```{r}
 
 # ANOVA test from the rstatix pack
-chronPain_long_aTest <- chronPain_long %>% anova_test(dv = APhFq, wid = Subject, within = Treatment)
+chronPain_long_aTest <- chronPain_long %>% anova_test(dv = APhFq, wid = Subject, within = TreatmentT)
 get_anova_table(chronPain_long_aTest)
 # Pairwise comparisons
 paired_chronPain <- chronPain_long %>% 
-  pairwise_t_test(APhFq ~ Treatment , paired = TRUE, p.adjust.method = "bonferroni")
+  pairwise_t_test(APhFq ~ TreatmentT , paired = TRUE, p.adjust.method = "bonferroni")
 
 data.frame(paired_chronPain)
 # # # # # # # # # # # # # # # # # #  
-```
-## More stuff  
-More examples of different libraries, with advanced and not parametric capacity functions.The function `aov_car` is the modified verdsion not the CAR version.
-
-```{r}
-# Using afex library
-library(afex)
-
-ps_chronPain_aovCar <- aov_car(APhFq ~ Treatment + Error(Subject/Treatmet), data= chronPain_long)
-ps_chronPain_aovCar
-
-ps_chronPain_aovCar_phoc <- emmeans(ps_chronPain_aovCar, ~Treatment)
-
-#For nonparametric
-nonP_chronPain <- chronPain_long %>%
-  friedman_test(APhFq ~ Treatment|Subject)
-
-nonP_chronPain
-
 ```
 
 ```{r bib, include=FALSE}
