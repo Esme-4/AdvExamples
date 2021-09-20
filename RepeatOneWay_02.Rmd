@@ -1,13 +1,10 @@
 ---
-title: "Example from the Chaper 8 Daniel"
+title: "Repeated Measures OneWay ANOVA"
 author: "F.A. Barrios"
-ipsum_meta:
-  og_url: "https\\://example.com/open/graph/finalURLfor/this"
-  og_description: "A modest size description of the content"
-  og_image: "https\\://example.com/open/graph/imageURLfor/this"
+date: "`r Sys.Date()`"
 output: 
-  hrbrthemes::ipsum:
-    toc: true
+  rmdformats::readthedown:
+    highlight: kate
 ---
 ```{r include=FALSE}
 knitr::opts_chunk$set(fig.retina=2)
@@ -90,7 +87,7 @@ plot(emm_aov, comparisons = TRUE)
 ```
 
 ## Using the `rstatix`  
-For using the anova function of `rstatix` library, the data can be "piped" and the *post hoc* handling is more complicated, the paiered t-test is used the estimate de adjusted differences.  
+For using the anova function of `rstatix` library, the data can be "piped" and the *post hoc* handling is more complicated, the paired t-test is used the estimate de adjusted differences from baseline.  
 
 ```{r}
 
@@ -102,10 +99,20 @@ paired_chronPain <- chronPain_long %>%
   pairwise_t_test(APhFq ~ TreatmentT , paired = TRUE, p.adjust.method = "bonferroni")
 
 data.frame(paired_chronPain)
-# # # # # # # # # # # # # # # # # #  
-```
+# # # # # # # # # # # # # # # # # # 
 
-```{r bib, include=FALSE}
-# KEEP THIS AT THE END OF THE DOCUMENT TO GENERATE A LOCAL bib FILE FOR PKGS USED
-knitr::write_bib(sub("^package:", "", grep("package", search(), value=TRUE)), file='skeleton.bib')
+# for reproducibility and data
+set.seed(123)
+library(ggstatsplot)
+library(afex) # to run anova
+
+# plot
+ggwithinstats(
+  data = chronPain_long,
+  x = TreatmentT,
+  y = APhFq,
+  title = "Assessing Physical Funct. for Sham Treatment",
+  caption = "Data source: Daniel ch 8",
+  ggtheme = ggthemes::theme_fivethirtyeight()
+)
 ```
