@@ -57,7 +57,7 @@ We will estimate the model with the base library `aov()` function and the `emmea
 ```{r}
 #
 # first load the missing libraries
-library(car)
+# library(car)
 library(emmeans)
 library(rstatix)
 
@@ -102,7 +102,19 @@ paired_chronPain <- chronPain_long %>%
   pairwise_t_test(APhFq ~ Treatment , paired = TRUE, p.adjust.method = "bonferroni")
 
 data.frame(paired_chronPain)
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #  
+```
+## More stuff  
+More examples of different libraries, with advanced and not parametric capacity functions.The function `aov_car` is the modified verdsion not the CAR version.
+
+```{r}
+# Using afex library
+library(afex)
+
+ps_chronPain_aovCar <- aov_car(APhFq ~ Treatment + Error(Subject/Treatmet), data= chronPain_long)
+ps_chronPain_aovCar
+
+ps_chronPain_aovCar_phoc <- emmeans(ps_chronPain_aovCar, ~Treatment)
 
 #For nonparametric
 nonP_chronPain <- chronPain_long %>%
