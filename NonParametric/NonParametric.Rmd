@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "More ANOVA stuff"
 date: "`r Sys.Date()`"
 output:
   rmdformats::robobook:
@@ -12,7 +12,7 @@ library(knitr)
 library(rmdformats)
 
 ## Global options
-options(max.print="75")
+options(max.print="80")
 opts_chunk$set(echo=FALSE,
 	             cache=TRUE,
                prompt=FALSE,
@@ -20,11 +20,12 @@ opts_chunk$set(echo=FALSE,
                comment=NA,
                message=FALSE,
                warning=FALSE)
-opts_knit$set(width=75)
+opts_knit$set(width=80)
 ```
+## Non-Parametric and other stuff  
 
-## More stuff  
-More examples of different libraries, with advanced and not parametric capacity functions.The function `aov_car` is the modified version not the CAR version.
+### More ANOVA options  
+More examples of different libraries, with advanced and not parametric capacity functions.The function `aov_car` is the modified version not the CAR version. And followed by a non parametric example with a Friedman test  
 
 ```{r}
 # Using afex library
@@ -45,8 +46,17 @@ chronPain_long <- chronPain_long %>%
 ps_chronPain_aovCar <- aov_car(APhFq ~ Time + Error(Subject/Time), data = chronPain_long)
 ps_chronPain_aovCar
 
-ps_chronPain_aovCar_phoc <- emmeans(ps_chronPain_aovCar, ~Time)
+knitr::kable(nice(ps_chronPain_aovCar))
 
+ps_chronPain_aovCar_phoc <- emmeans(ps_chronPain_aovCar, ~Time)
+ps_chronPain_aovCar_phoc
+pairs(ps_chronPain_aovCar_phoc)
+```
+
+### Friedman test  
+For a non parametric test we can run a repeated measures ANOVA using the Friedman test.
+
+```{r}
 #For nonparametric
 nonP_chronPain <- chronPain_long %>%
   friedman_test(APhFq ~ Time|Subject)
