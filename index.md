@@ -1,7 +1,7 @@
 # Statistical examples and problems  
 ## Fernando A. Barrios, Ph.D.  
-## Universidad Naacional Autónoma de México, Instituto de Neurobiología  
-### contact: barrios@inb.unam.mx  
+## Universidad Nacional Autónoma de México, Instituto de Neurobiología  
+#### contact: barrios@inb.unam.mx  
 
 These pages contain some solved problems and advanced examples from statistics subjects, many problems are taken from the Daniel's Biostatistics 
 book. All the examples are solved using R ([CRAN](https://cran.r-project.org/))and different R packages, running over 
