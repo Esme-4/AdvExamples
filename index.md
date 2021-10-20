@@ -5,8 +5,7 @@
 
 These pages contain some solved problems and advanced examples from statistics subjects, many problems are taken from the Daniel's Biostatistics 
 book. All the examples are solved using R ([CRAN](https://cran.r-project.org/))and different R packages, running over 
-[RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. 
-In particular I started with some ANOVA and regression examples.  
+[RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) that the material in the WEB.  For the problems presented here I started with some ANOVA and regression examples.  
 
 ## Repeated OneWay ANOVA  
 After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
