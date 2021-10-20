@@ -1,4 +1,4 @@
-# Statistical examples and problems  
+# Statistical examples and solved problems  
 ## Fernando A. Barrios, Ph.D.  
 ## Universidad Nacional Autónoma de México, Instituto de Neurobiología  
 #### contact: barrios@inb.unam.mx  
@@ -10,7 +10,7 @@ book. All the examples are solved using R ([CRAN](https://cran.r-project.org/))a
 ## Repeated OneWay ANOVA  
 After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
 different R functions and the needed libraries, for the *post hoc* analysis. The first examples are from some large data sets (LDS) from the end 
-of chapter problems of Daniel's chapter 7.  
+of chapter problems of Daniel's chapter 8. For the first example of repeated measures one-way ANOVA the data when loaded is in "table" fromat and it is necesary to change to long format, data wrangling is the term used to descrive the handling of the data to set it in a fomat needed for the R functions to solve the problem properlly. Then we solve, using different R functions, the [serum lipid-bound sialic acid (LSA) data problem](https://fabarrios.github.io/AdvExamples/LSAdataWrangling.html).  
 
 ## Bibliography  
 1. Daniel, W.W. (2009) Biostatistics. A Foundation for Analysis in the Health Sciences, Wiley, 9th Edition.  
