@@ -1,15 +1,15 @@
 # R Notes  
 
-In this document I will include notes related to R and some functions and notes that I think are helpful for the probelm solving and examples of the other pages. For example I include an incomplete list of R packages the I have used for different examples and classes. For example in general R fucntions will not excecute if they find a NA and stop without estimating the function, this can stop all the program, almost all the R functions have an option `na,rm = TRUE` will not include the NA events nevertheless it will not estimate and juno to the next command but will stop the program.    
+In this document I will include notes related to R and some functions and notes that I think are helpful for the problem solving and examples of the other pages. For example, I include an incomplete list of R packages the I have used for different examples and classes. In general R functions will not execute if they find a NA, they will stop without estimating the function, this can stop all the program, almost all the R functions have an option `na.rm = TRUE` that will instruct to not include the NA events, and dose events it will not be estimated and jump to the next command but will not stop the program.    
 
 ## Functions  
 Some general R functions  
 `sum(x)` addition of vector x.  
-`mean(x)` mean estimation of numerical vector  x (`sum(x)/lenght(x)`). It has a `trim` option (0., 0.5) to estimate the robust trimmed smaple mean.  
+`mean(x)` mean estimation of numerical vector x (`sum(x)/lenght(x)`). R mean function has a `trim` option (.0, 0.5) to estimate the robust trimmed sample mean.  
 `median(x)` median estimation of the numerical vector x.  
 `mad(x)` median absolute deviation for the median of numerical vector x.  
-`min(x)` y `max(x)` maximum and minimun of the numerical vector x.  
-`sd(x)` y `var(x)` stadndar deviation and variance of the numerical vector x.  
+`min(x)` y `max(x)` maximum and minimum of the numerical vector x.  
+`sd(x)` y `var(x)` standard deviation and variance of the numerical vector x.  
 `IQR(x)` Inter Quartile Range, uses function `quantile(x)`.   
 
 ## Logical filter operators  
@@ -25,33 +25,31 @@ Some general R functions
 |  &  |  AND  |  
 |  \| |  OR  |  
 
-## Importatn resource  
-There are "Cheatsheets" for several very useful libraries (tidyverse familly) I recomned print them in color and keep them handy they are used very frequently. [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/) from `tidy` familly from Rstudio.    
+## Important public resource  
+There are "Cheatsheets" for several very useful libraries (tidyverse family) I recommend print them in color and keep them handy they are used very frequently. [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/) from `tidy` family from Rstudio.    
 
-## Tidy Data (de acuerdo a `dplyr`)  
-Para hacer uso de estos comandos hay que cargar la `tidyverse` por medio del comando `library()`. Estos comandos son usados frecuentemente con el comando de "tubería o tubo" `%>%` y son de extrema utilidad al manipular estructuras de datos, o tablas o cómo se llaman en los datos "tidy" tibbles (tablas) en esta [liga](https://es.r4ds.hadley.nz/tibbles.html) se encuentra un documento que explica en R el manejo de "tibbles".  
-Aquí se lista algunos comandos básicos (muy básicos) y conceptoe fundamentales del orden que debe seguir una tabla de tados o tibble:  
-- Cada variable está en una columna  
-- Cada observación es un renglón  
-- Cada valor es la celda  
+## Tidy Data (as `dplyr`)  
+First always load `tidyverse` using the `library()` command. There is a fundamental way of thinking using the "pipe" command `%>%` simplifying the way data is "passed to the functions in R in a "tidy" [tibbles way](https://es.r4ds.hadley.nz/tibbles.html) to find an intro of data handling in "tibbles".  The fundamental concept of a tibble and the relation of the variable, observation, and value the order is very important and for data structures and tibbles must follow:    
+- Each **variable** is in its own **column**  
+- Each **observation**, or case, is in its own **row**  
+- Each **value** is in its **cell**    
   
   
-Algunos (pocos) comandos para transformación de datos en "tidy data" de `dplyr` (vervos de manipulación de datos)    
-- Para escojer observaciones por sus valores  
+Some, very few, commands for data transformation of data in "tibbles" this is "tidy data" from the `dplyr` cheatsheet (some verbs for data manipulation)    
+- To select observations (rows) by their values    
  `filter()`  
-- Para reordenar renglones  
+- For row reordering  
  `arrange()`  
-- Para seleccionar variables por nombre  
+- To select variables (columns) by name  
  `select()`  
-- Para creas una variable (columna) nueva en una tibble existente  
+- To create a new variable (column) into an existing tibble  
  `mutate()`  
-- Todas se pueden usar junto con  
+- All these functions can be used in combination with  
  `group_by()`  
-Estos son solo algunas funciones y comentarios para recordar el uso de algunos comandos de `dplyr`.  
+These are very few functions and function complement commands for `dplyr`.  
  
-## Gráficas con ggplot  
- Para gráficas en `ggplot` ademas del libro de [Harrison & Pius](https://argoshare.is.ed.ac.uk/healthyr_book/), hay varias páginas en la red que tienen recursos para aprender a hacer gráficas en ggplot una buena es [plotly](https://plotly.com/ggplot2/)  
+## ggplot graphics  
+For learning how to plot with ggplot I recommend, as introduction, to follow step by step chapter 4 of [Harrison & Pius](https://argoshare.is.ed.ac.uk/healthyr_bo,ok/), and for refreshing of the multiple commands to always have handy the `ggplot cheatsheet`, and always keep for the hunting of useful ggplot WEB  open resources like the [plotly](https://plotly.com/ggplot2/) page.  
  
-## Librerías de R (CRAN)  
-Algunas [librerías de R](https://fabarrios.github.io/ProbEstad/Presenta/Libraries) estan latabla, pero al instalar se instalan varias otras librerías que complementan la operación del conjunto. Siempre es bueno checar por compatibilidades de las librerías cargadas en memoria.  
-
+## R (CRAN) packages  
+Some (very few) [R packages](https://fabarrios.github.io/ProbEstad/Presenta/Libraries) are listed in the table, these are the more common libraries that I use in the examples presented in this ages. Remember to install always with the "install dependencies" option turned on!   
