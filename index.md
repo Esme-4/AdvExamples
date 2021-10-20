@@ -9,8 +9,8 @@ book. All the examples are solved using R ([CRAN](https://cran.r-project.org/))a
 In particular I started with some ANOVA and regression examples.  
 
 ## Repeated OneWay ANOVA  
-After loading data in R, the first step is to undesrtand the structure of anf format the data is, and restructure its ordes if needed to use the 
-different R functions and the needed libraries, for the *post hoc* analysis. The first examples are from some large data sets (LDS) froms the end 
+After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
+different R functions and the needed libraries, for the *post hoc* analysis. The first examples are from some large data sets (LDS) from the end 
 of chapter problems of Daniel's chapter 7.  
 
 ## Bibliography  
