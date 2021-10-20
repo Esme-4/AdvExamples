@@ -1,19 +1,18 @@
-# Notas de R  
+# R Notes  
 
-En este documento agregaremos notas y comentarios prácticos del leguaje R o partes de código. Por ejemplo por lo general en las funciones numéricas de R si se encuentran algún elemento con un NA (sin contenido numérico) se detienen sin estimar la operación pudiendo detener un programa. Así casi todas las funciones de R cuentan con una opción `na.rm = TRUE` que si está presente como opción en la función, no incluyen en la estimación de la función aquellos elementos con NA (no los toman en cuenta).  
+In this document I will include notes related to R and some functions and notes that I think are helpful for the probelm solving and examples of the other pages. For example I include an incomplete list of R packages the I have used for different examples and classes. For example in general R fucntions will not excecute if they find a NA and stop without estimating the function, this can stop all the program, almost all the R functions have an option `na,rm = TRUE` will not include the NA events nevertheless it will not estimate and juno to the next command but will stop the program.    
 
-## Funciones  
-De las funciones más básicas de R que son de gran utilidad están:  
-`sum(x)` esta función suma los elementos del vector numérico x.  
-`mean(x)` esta función regresa la media de los elementos del vector numérico x, como (`sum(x)/lenght(x)`).  
-`median(x)` esta función estima la mediana de los elementos del vector numérico x.  
-`min(x)` y `max(x)` estiman el mínimo y el máximo numérico del vector x.  
-`sd(x)` y `var(x)` estiman la desviación estándar y la varianza del vector x.  
-`IQR(x)` estima el Inter Quartile Range, la distancia intercuartile de x, usa la funcion `quantile(x)`.  
+## Functions  
+Some general R functions  
+`sum(x)` addition of vector x.  
+`mean(x)` mean estimation of numerical vector  x (`sum(x)/lenght(x)`). It has a `trim` option (0., 0.5) to estimate the robust trimmed smaple mean.  
+`median(x)` median estimation of the numerical vector x.  
+`mad(x)` median absolute deviation for the median of numerical vector x.  
+`min(x)` y `max(x)` maximum and minimun of the numerical vector x.  
+`sd(x)` y `var(x)` stadndar deviation and variance of the numerical vector x.  
+`IQR(x)` Inter Quartile Range, uses function `quantile(x)`.   
 
-Para variables paramétricas, tenemos `mean(x)` media y `sd(x)` desviación estándar, como estimadores de medida central y dispersión. Y para medidas no-paramétricas tenemos `median(x)` mediana y `mad(x)` (median absolute deviation) desviación de la mediana, como medidas de centralidad.  
-
-## Operadores lógicos de filtrado  
+## Logical filter operators  
 
 | Operators | Meaning |  
 | :-------: | ------- |  
@@ -26,8 +25,8 @@ Para variables paramétricas, tenemos `mean(x)` media y `sd(x)` desviación est�
 |  &  |  AND  |  
 |  \| |  OR  |  
 
-## Recurso importante !!!  
-Un recurso muy importante y práctico para el uso de voirs de los recursos de Rstudio y varios de los paquetes miembros de la familia (y extras) de `tidyverse` son las "Cheatsheets" (hojas de trampa, o mejor dicho en español acordiones) estos acordiones son muy utilizados y prácticos y acaban de ser revisados y re-publicados, es muy recomendable imprimirlos (en color) y guardarlos en una carpeta de trabajo. Yo los uso frecuentemenre. [Acordiones](https://www.rstudio.com/resources/cheatsheets/) de la familia `tidy` de Rstudio. **Pueden encontrar una copia de las últimas versiones en pdf en el directorio pdf de mi repositorio.**  
+## Importatn resource  
+There are "Cheatsheets" for several very useful libraries (tidyverse familly) I recomned print them in color and keep them handy they are used very frequently. [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/) from `tidy` familly from Rstudio.    
 
 ## Tidy Data (de acuerdo a `dplyr`)  
 Para hacer uso de estos comandos hay que cargar la `tidyverse` por medio del comando `library()`. Estos comandos son usados frecuentemente con el comando de "tubería o tubo" `%>%` y son de extrema utilidad al manipular estructuras de datos, o tablas o cómo se llaman en los datos "tidy" tibbles (tablas) en esta [liga](https://es.r4ds.hadley.nz/tibbles.html) se encuentra un documento que explica en R el manejo de "tibbles".  
