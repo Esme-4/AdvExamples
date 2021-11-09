@@ -79,7 +79,7 @@ ggplot(Hyper_n, aes(x = Group, y = Cholesterol, color = Group)) +
   geom_jitter(height = .1, width = .1)
 ```
 
-set.seed(123)We start this example estimating a parametric t-test, from rstatix, to use the same data format for the non-parametric test. Then we run the Wilconxon test from rstatix. Finally, in the robust statistical estimates section we use a yuen test and other examples.
+We start this example estimating a parametric t-test, from rstatix, to use the same data format for the non-parametric test. Then we run the Wilconxon test from rstatix. Finally, in the robust statistical estimates section we use a yuen test and other examples.
 
 ```{r}
 Hyper_t_test <- t_test(Hyper_n, Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% add_significance()
