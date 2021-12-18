@@ -18,4 +18,4 @@ of chapter problems of Daniel's chapter 8. For the first example of repeated mea
 2. Harrell, F.E. (2015) Regression Modeling Strategies (2nd edition), Springer Series in Statistics, Springer.  
 3. Hothorn, T. & Everitt, B.S. (2014) A Handbook of Statistical Analyses Using R (3rd edition), Chapman & Hall/CRC Press.  
 4. Harrison, E. & Pius, R. (2021) R for Health Data Science, CRC Press, Taylor and Francis Group.  
-5. Crawley, M.J. (2005) Statistics An Introduction using R, John Wiley & Sons Ltd.  
+5. Crawley, M.J. (2015) Statistics An Introduction using R, Second Edition, John Wiley & Sons Ltd.  
