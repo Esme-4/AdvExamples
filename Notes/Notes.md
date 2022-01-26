@@ -49,7 +49,7 @@ Some, very few, commands for data transformation of data in "tibbles" this is "t
 These are very few functions and function complement commands for `dplyr`.  
  
 ## ggplot graphics  
-For learning how to plot with ggplot I recommend, as introduction, to follow step by step chapter 4 of [Harrison & Pius](https://argoshare.is.ed.ac.uk/healthyr_bo,ok/), and for refreshing of the multiple commands to always have handy the `ggplot cheatsheet`, and always keep for the hunting of useful ggplot WEB  open resources like the [plotly](https://plotly.com/ggplot2/) page.  
+For learning how to plot with ggplot I recommend, as introduction, to follow step by step chapter 4 of [Harrison & Pius](https://argoshare.is.ed.ac.uk/healthyr_book/), and for refreshing of the multiple commands to always have handy the `ggplot cheatsheet`, and always keep for the hunting of useful ggplot WEB  open resources like the [plotly](https://plotly.com/ggplot2/) page.  
  
 ## R (CRAN) packages  
 Some (very few) [R packages](https://fabarrios.github.io/ProbEstad/Presenta/Libraries) are listed in the table, these are the more common libraries that I use in the examples presented in this ages. Remember to install always with the "install dependencies" option turned on!   
