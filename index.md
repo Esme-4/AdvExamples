@@ -6,7 +6,10 @@
 ## Introduction  
 These pages contain some data manipulations and solved problems ilustrating advanced statistics examples, many problems are taken from the Daniel's Biostatistics 
 book. All the examples are solved using R ([CRAN](https://cran.r-project.org/)) and different R packages, running over 
-[RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) with its related material in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes). For the problems presented here I started with some y-Test, ANOVA, and regression examples.  
+[RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) with its related material in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes). For the problems presented here I started with some t-Test, ANOVA, and regression examples.  
+
+## t-Test, Two samples     
+The simplest so-called classical tests for comparing two meanda 
 
 ## Repeated OneWay ANOVA  
 After loading data in R, the first step is to understand the format and structure of the data loaded, and restructure its order if needed to use the 
