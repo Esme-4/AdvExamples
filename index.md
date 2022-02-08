@@ -9,7 +9,7 @@ book. All the examples are solved using R ([CRAN](https://cran.r-project.org/)) 
 [RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) with its related material in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes). For the problems presented here I started with some t-Test, ANOVA, and regression examples.  
 
 ## t-Test, Two samples     
-The simplest so-called classical tests for comparing two meanda 
+The simplest so-called classical tests for comparing two samples means. 
 
 ## Repeated OneWay ANOVA  
 After loading data in R, the first step is to understand the format and structure of the data loaded, and restructure its order if needed to use the 
