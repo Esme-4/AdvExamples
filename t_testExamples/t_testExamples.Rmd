@@ -19,13 +19,19 @@ library(WRS2)
 ```
 # Two-sample testing, t-test examples
 
-## Non-parametric examples
+## Non-parametric examples  
 
-The comparison of tow populations using t-test
+There are two simple tests for comparing two sample means from populations: the *Student's t-test* (parametric) and the Wilcoxon rank-sum test fro errors not normally distributed (non-parametric).  But lets start considering the assumptions for these tests, like the test for difference in the samples variances.  
+
+## Comparing Two Variances  
+Before we do a test to compare two sample means, we need to compare two variances. All we do is to divide the large variance by the small variance. If the variances are the same we will get a ratio of 1, obviously. This can be done estimating the critical value of the variance ratio, for this we use the *Fisher's F* distribution. If the test statistic is larger than the critical value (*F*), we reject the null hypothesis.  For this test the null hypothesis is assuming the the variances ration is equal to one.  In R. there is a build in function called `var.test`.  
+
+## Wilcoxon Ranl-Sum Test  
+This is a non-parametric alternative to Student's *t* test, this test can be used if the error are non-normal. R has a build-in function `wilcox.test`  (and R packages too), that make the procedure without the need to estimate tables pf critical values of the Wilcoxon rank sums.
 
 **Example 1** The purpose of a study by Tam et al. was to investigate wheelchair maneuvering in individuals with lower-level spinal cord injury (SCI) and healthy controls (C). Subjects used a modified wheelchair to incorporate a rigid seat surface to facilitate the specified experimental measurements. Interface pressure measurement was recorded by using a high-resolution pressure-sensitive mat with a spatial resolution of four sensors per square centimeter taped on the rigid seat support. During static sitting conditions, average pressures were recorded under the ischial tuberosities (the bottom part of the pelvic bones). The data for measurements of the left ischial tuberosity (in mm Hg) for the SCI and control groups are shown in EXA_C07_S03_02.csv. We wish to know if we may conclude, on the basis of these data, that, in general, healthy subjects exhibit lower pressure than SCI subjects.
 
-*Result* We are going to run two solutions, there is a parametric solution using R's 't.test()' in my [Statistics course page](https://fabarrios.github.io/ProbEstad/Hipotesis/Hipotesis.html), here we are going to use the rstatix for non-parametric solution and WRS2 for a robust solution.  First to use the pipeline structure in rstatix we need to wrangle the data.
+*Result* We are going to run two solutions, there is a parametric solution using R's 't.test()' in my [Statistics course page](https://fabarrios.github.io/ProbEstad/Hipotesis/Hipotesis.html), here we are going to use the rstatix for non-parametric solution and WRS2 for a robust solution.  First to use the pipeline structure in rstatix we need to wrangle the data a little.
 
 ```{r}
 
@@ -44,6 +50,8 @@ ggplot(SCI_long, aes(x = Group, y = Pressure, color = Group)) +
   geom_boxplot() +
   geom_jitter(height = .1, width = .1)
 
+var.test(Pressure ~ Group, data = SCI_long)
+
 SCL_wilcox <- wilcox_test(SCI_long, Pressure ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>%
   add_significance()
 
@@ -59,6 +67,7 @@ this answer for the estimate falls in the non-rejection region, the two groups a
 ```{r}
 Hyper <- read_csv("~/DropBox/GitHub/ProbEstad/DataSets/ch07_all/EXR_C07_S03_04.csv", show_col_types = FALSE)
 
+Hyper
 ```
 
 We have the data format in long format so we can do "data and formula", nevertheless we need to "factor" the data and the levels are fine (1, 2) making the hypertensive the 1 = HT and the normotensive 2 = NT.
@@ -79,14 +88,19 @@ ggplot(Hyper_n, aes(x = Group, y = Cholesterol, color = Group)) +
   geom_jitter(height = .1, width = .1)
 ```
 
-We start this example estimating a parametric t-test, from rstatix, to use the same data format for the non-parametric test. Then we run the Wilconxon test from rstatix. Finally, in the robust statistical estimates section we use a yuen test and other examples.
+We start this example estimating a parametric t-test, from rstatix, to use the same data format for the non-parametric test. We initiate by estimating the `var.test()`Then we run the Wilcoxon test from rstatix. Finally, in the robust statistical estimates section we use a yuen test and other examples.
 
 ```{r}
-Hyper_t_test <- t_test(Hyper_n, Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% add_significance()
+# estimate Null hypothesis is var1/var2 = 1
+var.test(Cholesterol ~ Group, data = Hyper_n)
+
+Hyper_t_test <- Hyper_n %>% t_test(Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% add_significance()
+
 Hyper_t_test
 
 # And the non-parametric example
-Hyper_wilcox <- wilcox_test(Hyper_n, Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% add_significance()
+Hyper_wilcox <- Hyper_n %>% wilcox_test(Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% add_significance()
+
 Hyper_wilcox
 
 ```
