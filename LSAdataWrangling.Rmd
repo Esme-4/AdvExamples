@@ -3,7 +3,7 @@ title: "LSAdata OneWay ANOVA"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output: 
-  rmdformats::readthedown:
+  rmdformats::robobook:
     highlight: kate
 ---
 
@@ -121,7 +121,6 @@ Next following with the examples, using the tibble friendly `rstatix` library (w
 
 ```{r}
 library(rstatix)
-
 LSAdata.aov_test <- LSAdata_long %>% anova_test(LSA ~ Type, effect.size = "ges", detailed = TRUE)
 get_anova_table(LSAdata.aov_test)
 
@@ -133,8 +132,7 @@ LSAdata_long %>% emmeans_test(LSA ~ Type, p.adjust.method = "fdr", detailed = TR
 Now we can analyze the same data using non-parametric tests. For substitute of a one-Way ANOVA we use Kruskal-Wallis to estimate the effects size and to estimate a post hoc pairwise multiple comparisons we execute a Dunn test, this test is based in a pairwise comparison of the ranked data, and te mean rank of the different group is compared all from the `rstatix` library. The Dunn test used to follow a Kruskal-Wallis test.  
 
 ```{r}
-res.kruskal <- LSAdata_long %>% kruskal_test(LSA ~ Type)
-res.kruskal
+# LSAdata_kruskal <- LSAdata_long %>% kruskal_test(LSA ~ Type)
 
 # And estimate the Kruskal effect size
 LSAdata_long %>% kruskal_effsize(LSA ~ Type)
