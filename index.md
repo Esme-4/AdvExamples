@@ -8,8 +8,11 @@ These pages contain some data manipulations and solved problems ilustrating adva
 book. All the examples are solved using R ([CRAN](https://cran.r-project.org/)) and different R packages, running over 
 [RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) with its related material in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes). For the problems presented here I started with some t-Test, ANOVA, and regression examples.  
 
-## Student's *t* Test, Comparing Two samples     
-The simplest so-called classical tests for comparing two samples means. For independent samples, constant variances of the samples, and the errors normally distributed the *Student's t test*, and when the samles are independent but the errors are not normally distributed the *Wilcoxon rank-sum test*. We have [several ecamples for the comparison of the means of two camples](https://fabarrios.github.io/AdvExamples/t_testExamples/t_testExamples.html).
+## Student's *t* Test, Comparing Two Samples     
+The simplest so-called classical tests for comparing two samples means. For independent samples, constant variances of the samples, and the errors normally distributed the *Student's t test*, and when the samles are independent but the errors are not normally distributed the *Wilcoxon rank-sum test*. We have [some ecamples for the comparison of the means of two camples](https://fabarrios.github.io/AdvExamples/t_testExamples/t_testExamples.html).
+
+## Paired comparison of Two Samples  
+A method employed for assessing the effectiveness of an experimental procedure is one that makes use of related observations resulting from nonindependent samples we can use the paired measures t-Test. We have some examples of paired comparisons in R.
 
 ## OneWay ANOVA  
 After loading data in R, the first step is to understand the format and structure of the data loaded, and restructure its order if needed to use the 
