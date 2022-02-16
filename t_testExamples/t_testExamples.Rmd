@@ -24,7 +24,7 @@ library(WRS2)
 There are two simple tests for comparing two sample means from populations: the *Student's t-test* (parametric) and the Wilcoxon rank-sum test fro errors not normally distributed (non-parametric).  But lets start considering the assumptions for these tests, like the test for difference in the samples variances.  
 
 ## Comparing Two Variances  
-Before we do a test to compare two sample means, we need to compare two variances. All we do is to divide the large variance by the small variance. If the variances are the same we will get a ratio of 1, obviously. This can be done estimating the critical value of the variance ratio, for this we use the *Fisher's F* distribution. If the test statistic is larger than the critical value (*F*), we reject the null hypothesis.  For this test the null hypothesis is assuming the the variances ration is equal to one.  In R. there is a build in function called `var.test`. We will include some variance test in the examples bellow.  
+Before we do a test to compare two sample means, we need to compare two variances. All we do is to divide the large variance by the small variance. If the variances are the same we will get a ratio of 1, obviously. This can be done estimating the critical value of the variance ratio, for this we use the *Fisher's F* distribution. If the test statistic is larger than the critical value (*F*), we reject the null hypothesis.  For this test the null hypothesis is assuming the the variances ration is equal to one.  In R. there is a build in function called `var.test`, and rstatix has a Levene's test. We will include some variance tests in the examples bellow.  
 
 ## Wilcoxon Rank-Sum Test  
 This is a non-parametric alternative to Student's *t* test, this test can be used if the error are non-normal. R has a build-in function `wilcox.test`  (and R packages too), that make the procedure without the need to estimate tables pf critical values of the Wilcoxon rank sums.
@@ -139,3 +139,31 @@ akp.effect(Cholesterol ~ Group, data = Hyper_n)
 yuen.effect.ci(Cholesterol ~ Group, data = Hyper_n)
 
 ```
+
+## Paired Comparisons  
+The objective of paired comparisons tests is to eliminate a maximum number of sources of extraneous variation by making the pairs similar with respect to as many variables as possible.  Instead of performing the analysis with individual observations, paired observations run the comparison on the differences, of the two observations per subject as the variable of interest.  
+**Example 3** The purpose of an investigation by Morley et al. was to evaluate the analgesic effectiveness of a daily dose of oral methadone in patients with chronic neuropathic pain syndromes. The researchers used a visual analogue scale (*0–100 mm*, higher number indicates higher pain) ratings for maximum pain intensity over the course of the day. Each subject took either 20 mg of methadone or a placebo each day for 5 days. Subjects did not know which treatment they were taking. The following table gives the mean maximum pain intensity scores for the 5 days on methadone and the 5 days on placebo. Do these data provide sufficient evidence, at the .05 level of significance, to indicate that in general the maximum pain intensity is lower on days when methadone is taken? (Data is in EXR_C07_S04_03.csv).  
+
+```{r}
+# Reading the data
+MaxPain <- read_csv("~/DropBox/GitHub/ProbEstad/DataSets/ch07_all/EXR_C07_S04_03.csv", show_col_types = FALSE)
+
+# adding a new column for the subject ID
+MaxPain_new <- MaxPain %>% mutate(Subj = 1:11)
+
+# to make the data long
+MaxPain_new_long <- MaxPain_new %>%
+  pivot_longer(cols = c("Plac", "Meth"), names_to = "Treatment", values_to = "MaxPain")
+
+# Now we re-level the Treatment to Placebo and Methadone to force the order of factors
+MaxPain_new_long <- MaxPain_new_long %>% mutate(Treatment %>% fct_relevel("Plac", "Meth"))
+
+# A boxplot
+MaxPain_new_long %>% ggplot(aes(x = Treatment, y = MaxPain)) +
+    geom_violin() +
+    geom_jitter(aes(color = Treatment), shape = 16, position = position_jitter(seed = 123)) +
+    labs(title = "Responces to Methadone treatment of Pain") +
+    theme_bw()
+```
+
+
