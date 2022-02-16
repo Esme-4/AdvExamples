@@ -8,13 +8,19 @@ These pages contain some data manipulations and solved problems ilustrating adva
 book. All the examples are solved using R ([CRAN](https://cran.r-project.org/)) and different R packages, running over 
 [RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the different statistics courses I teach at UNAM. There is an undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) with its related material in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes). For the problems presented here I started with some t-Test, ANOVA, and regression examples.  
 
-## Student's *t* Test, Comparing Two samples     
-The simplest so-called classical tests for comparing two samples means. For independent samples, constant variances of the samples, and the errors normally distributed the *Student's t test*, and when the samles are independent but the errors are not normally distributed the *Wilcoxon rank-sum test*. We have [several ecamples for the comparison of the means of two camples](https://fabarrios.github.io/AdvExamples/t_testExamples/t_testExamples.html).
+## Student's *t* Test, Comparing Two Samples     
+The simplest so-called classical tests for comparing two samples means. For independent samples, constant variances of the samples, and the errors normally distributed the *Student's t test*, and when the samles are independent but the errors are not normally distributed the *Wilcoxon rank-sum test*. We have [some ecamples for the comparison of the means of two camples](https://fabarrios.github.io/AdvExamples/t_testExamples/t_testExamples.html).
 
-## Repeated OneWay ANOVA  
+## Paired comparison of Two Samples  
+A method employed for assessing the effectiveness of an experimental procedure is one that makes use of related observations resulting from nonindependent samples we can use the paired measures t-Test. We have some examples of paired comparisons in R.
+
+## OneWay ANOVA  
 After loading data in R, the first step is to understand the format and structure of the data loaded, and restructure its order if needed to use the 
 different R functions and the needed libraries, for the *post hoc* analysis. The first examples are from some large data sets (LDS) from the end 
-of chapter 8 of Daniel's book. For the first example of repeated measures one-way ANOVA the data when loaded is in "table" format and it is necesary to change to long format, data wrangling is the term used to describe the handling of the data to set it in a format needed for the R functions to solve the problem properly. Then we solve, using different R functions, the [serum lipid-bound sialic acid (LSA) data problem](https://fabarrios.github.io/AdvExamples/LSAdataWrangling.html).  
+of chapter 8 of Daniel's book. For the first example of one-way ANOVA the data when loaded is in "table" format and it is necesary to change to long format, data wrangling is the term used to describe the handling of the data to set it in a format needed for the R functions to solve the problem properly. Then we solve, using different R functions, the [serum lipid-bound sialic acid (LSA) data problem](https://fabarrios.github.io/AdvExamples/LSAdataWrangling.html).
+
+## Repeated Measures Design
+A prepeated measures design in one in which measures of the same variable are made on each bubject on two or more diferent ocassions. The mayor advantage of this kind of design is the ability to control for extraneous variables among subjects. Other advantage is the need fo less subjects. Nevertheless, there are potential problems as the carry-over effect, in which different conditions most be known to return to baseline before the next condition is measured. 
 
 ## Bibliography  
 1. Daniel, W.W. (2009) Biostatistics. A Foundation for Analysis in the Health Sciences, Wiley, 9th Edition.  
