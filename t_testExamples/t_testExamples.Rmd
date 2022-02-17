@@ -170,8 +170,14 @@ To solve this problems we use the `t.test()` with the `paired` flag set to `TRUE
 
 ```{r}
 # Using the base lib t.test
-t.test(MaxPain ~ Treatment , data = MaxPain_new_long, alternative = "less", paired = TRUE, var.equal = TRUE, conf.level = 0.95)
+t.test(MaxPain ~ Treatment, data = MaxPain_new_long, alternative = "less", paired = TRUE, var.equal = TRUE, conf.level = 0.95)
 
+MaxPain_new_long %>% t_test(MaxPain ~ Treatment, 
+                            alternative = "less",
+                            p.adjust.method = "holm",
+                            paired = TRUE, 
+                            var.equal = TRUE, 
+                            conf.level = 0.95)
 ```
 
 
