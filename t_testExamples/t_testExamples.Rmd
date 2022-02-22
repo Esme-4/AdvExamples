@@ -16,6 +16,7 @@ library(tidyverse)
 library(emmeans)
 library(rstatix)
 library(WRS2)
+library(ggstatsplot)
 ```
 # Two-sample testing, t-test examples
 
@@ -112,7 +113,6 @@ Hyper_wilcox
 
 ```
 
-
 ## Robust statisticlal Methods
 
 Now for the **Example 1** we use a  robust statistic test for a two-sample trimmed mean test from the WRS2 package, the `yuen` test and the bootstrap version too `yuenbt`
@@ -140,8 +140,27 @@ yuen.effect.ci(Cholesterol ~ Group, data = Hyper_n)
 
 ```
 
+### "Nice graphics"  
+No lets use an interesting R package that produces quite interesting graphics `ggstatsplot` we will make more examples of this package to solve ANOVA examples.
+
+```{r}
+
+# from the example 2 for the patients with primary hypertension (PH)
+ggbetweenstats(
+  data = Hyper_n,
+  x    = Group,
+  y    = Cholesterol,
+  plot.type = "boxviolin",
+  type = "parametric",
+  p.adjust.method = "holm",
+  title = "Cholesterol effect in patients with primary hypertension (PH)"
+)
+
+```
+
 ## Paired Comparisons  
 The objective of paired comparisons tests is to eliminate a maximum number of sources of extraneous variation by making the pairs similar with respect to as many variables as possible.  Instead of performing the analysis with individual observations, paired observations run the comparison on the differences, of the two observations per subject as the variable of interest.  
+
 **Example 3** The purpose of an investigation by Morley et al. was to evaluate the analgesic effectiveness of a daily dose of oral methadone in patients with chronic neuropathic pain syndromes. The researchers used a visual analogue scale (*0–100 mm*, higher number indicates higher pain) ratings for maximum pain intensity over the course of the day. Each subject took either *20 mg* of methadone or a placebo each day for 5 days. Subjects did not know which treatment they were taking. The following table gives the *mean maximum pain* intensity scores for the 5 days on methadone and the 5 days on placebo. Do these data provide sufficient evidence, at the *.05* level of significance, to indicate that in general the maximum pain intensity is *lower* on days when methadone is taken? (Data is in EXR_C07_S04_03.csv).  
 
 ```{r}
@@ -178,6 +197,19 @@ MaxPain_new_long %>% t_test(MaxPain ~ Treatment,
                             paired = TRUE, 
                             var.equal = TRUE, 
                             conf.level = 0.95)
+# Now the nice graph
+# from the example 2 for the patients with primary hypertension (PH)
+ggwithinstats(
+  data = MaxPain_new_long,
+  x    = Treatment,
+  y    = MaxPain,
+  plot.type = "boxviolin",
+  type = "parametric",
+  p.adjust.method = "holm",
+  pairwise.comparisons = TRUE,
+  title = "Responces to Methadone treatment of Pain"
+)
+
 ```
 
 
