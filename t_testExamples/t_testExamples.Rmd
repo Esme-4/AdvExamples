@@ -36,7 +36,8 @@ This is a non-parametric alternative to Student's *t* test, this test can be use
 
 ```{r}
 
-SCI_con <- read_csv("~/DropBox/GitHub/ProbEstad/DataSets/ch07_all/EXA_C07_S03_02.csv", show_col_types = FALSE)
+SCI_con <- read_csv("~/DropBox/GitHub/ProbEstad/DataSets/ch07_all/EXA_C07_S03_02.csv", 
+                    show_col_types = FALSE)
 
 SCI_con
 
@@ -56,7 +57,12 @@ ggplot(SCI_long, aes(x = Group, y = Pressure, color = Group)) +
 var.test(Pressure ~ Group, data = SCI_long)
 SCI_long %>% levene_test(Pressure ~ Group, center = median)
 
-SCL_wilcox <- SCI_long %>% wilcox_test(Pressure ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>%
+SCL_wilcox <- SCI_long %>% 
+  wilcox_test(Pressure ~ Group, 
+              p.adjust.method = "holm", 
+              paired = FALSE, 
+              alternative = "less", 
+              conf.level = 0.95) %>%
   add_significance()
 
 SCL_wilcox
@@ -99,14 +105,22 @@ We start this example estimating a parametric t-test, from rstatix, to use the s
 var.test(Cholesterol ~ Group, data = Hyper_n)
 
 Hyper_t_test <- Hyper_n %>% 
-  t_test(Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% 
+  t_test(Cholesterol ~ Group, 
+         p.adjust.method = "holm", 
+         paired = FALSE, 
+         alternative = "less", 
+         conf.level = 0.95) %>% 
   add_significance()
 
 Hyper_t_test
 
 # And the non-parametric example
 Hyper_wilcox <- Hyper_n %>% 
-  wilcox_test(Cholesterol ~ Group, p.adjust.method = "holm", paired = FALSE, alternative = "less", conf.level = 0.95) %>% 
+  wilcox_test(Cholesterol ~ Group, 
+              p.adjust.method = "holm", 
+              paired = FALSE, 
+              alternative = "less", 
+              conf.level = 0.95) %>% 
   add_significance()
 
 Hyper_wilcox
