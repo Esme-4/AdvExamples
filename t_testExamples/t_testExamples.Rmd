@@ -104,11 +104,18 @@ We start this example estimating a parametric t-test, from rstatix, to use the s
 # estimate Null hypothesis is var1/var2 = 1
 var.test(Cholesterol ~ Group, data = Hyper_n)
 
+Hyper_base_tTest <- t.test(Cholesterol ~ Group, 
+                           data = Hyper_n,
+                           paired = FALSE,
+                           var.equal = FALSE,
+                           alternative = "greater",
+                           conf.level = 0.95)
+
 Hyper_t_test <- Hyper_n %>% 
   t_test(Cholesterol ~ Group, 
          p.adjust.method = "holm", 
          paired = FALSE, 
-         alternative = "less", 
+         alternative = "greater",
          conf.level = 0.95) %>% 
   add_significance()
 
@@ -119,7 +126,7 @@ Hyper_wilcox <- Hyper_n %>%
   wilcox_test(Cholesterol ~ Group, 
               p.adjust.method = "holm", 
               paired = FALSE, 
-              alternative = "less", 
+              alternative = "greater", 
               conf.level = 0.95) %>% 
   add_significance()
 
@@ -148,7 +155,7 @@ Hyper_yuen <- yuen(Cholesterol ~ Group, data = Hyper_n)
 Hyper_yuen
 
 # Effect size
-# set.seed(123)
+set.seed(123)
 akp.effect(Cholesterol ~ Group, data = Hyper_n)
 yuen.effect.ci(Cholesterol ~ Group, data = Hyper_n)
 
@@ -189,7 +196,7 @@ MaxPain_new_long <- MaxPain_new %>%
   pivot_longer(cols = c("Plac", "Meth"), names_to = "Treatment", values_to = "MaxPain")
 
 # Now we re-level the Treatment to Placebo and Methadone to force the order of factors
-MaxPain_new_long <- MaxPain_new_long %>% mutate(Treatment %>% fct_relevel("Plac", "Meth"))
+MaxPain_new_long <- MaxPain_new_long %>% mutate(factor(Treatment))
 
 # A boxplot
 MaxPain_new_long %>% ggplot(aes(x = Treatment, y = MaxPain)) +
@@ -197,13 +204,20 @@ MaxPain_new_long %>% ggplot(aes(x = Treatment, y = MaxPain)) +
     geom_jitter(aes(color = Treatment), shape = 16, position = position_jitter(seed = 123)) +
     labs(title = "Responces to Methadone treatment of Pain") +
     theme_bw()
+
 ```
 
 To solve this problems we use the `t.test()` with the `paired` flag set to `TRUE`
 
 ```{r}
+
 # Using the base lib t.test
-t.test(MaxPain ~ Treatment, data = MaxPain_new_long, alternative = "less", paired = TRUE, var.equal = TRUE, conf.level = 0.95)
+t.test(MaxPain ~ Treatment, 
+       data = MaxPain_new_long, 
+       alternative = "less", 
+       paired = TRUE, 
+       var.equal = TRUE, 
+       conf.level = 0.95)
 
 MaxPain_new_long %>% t_test(MaxPain ~ Treatment, 
                             alternative = "less",
@@ -211,6 +225,14 @@ MaxPain_new_long %>% t_test(MaxPain ~ Treatment,
                             paired = TRUE, 
                             var.equal = TRUE, 
                             conf.level = 0.95)
+
+# for the effect size with a d Cohen
+MaxPain_new_long %>% cohens_d(MaxPain ~ Treatment, 
+                     paired = TRUE,
+                     ref.group = "Plac",
+                     var.equal = TRUE,
+                     conf.level = 0.95)
+
 # Now the nice graph
 # from the example 2 for the patients with primary hypertension (PH)
 ggwithinstats(
