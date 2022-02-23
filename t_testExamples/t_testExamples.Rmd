@@ -57,6 +57,22 @@ ggplot(SCI_long, aes(x = Group, y = Pressure, color = Group)) +
 var.test(Pressure ~ Group, data = SCI_long)
 SCI_long %>% levene_test(Pressure ~ Group, center = median)
 
+SCI_long.t.Test <- t.test(Pressure ~ Group,
+                          data = SCI_long,
+                          alternative = "less",
+                          paired = FALSE,
+                          var.equal = TRUE,
+                          conf.level = 0.95)
+SCI_long.t.Test
+
+SCI_long %>% cohens_d(Pressure ~ Group,
+                      ref.group = "CONTROL",
+                      var.equal = TRUE,
+                      paired = FALSE,
+                      hedges.correction = FALSE,
+                      ci = FALSE,
+                      conf.level = 0.95)
+
 SCL_wilcox <- SCI_long %>% 
   wilcox_test(Pressure ~ Group, 
               p.adjust.method = "holm", 
@@ -96,6 +112,7 @@ Hyper_n <- Hyper_n %>%
 ggplot(Hyper_n, aes(x = Group, y = Cholesterol, color = Group)) +
   geom_boxplot() +
   geom_jitter(height = .1, width = .1)
+
 ```
 
 We start this example estimating a parametric t-test, from rstatix, to use the same data format for the non-parametric test. We initiate by estimating the `var.test()`Then we run the Wilcoxon test from rstatix. Finally, in the robust statistical estimates section we use a yuen test and other examples.
@@ -104,22 +121,32 @@ We start this example estimating a parametric t-test, from rstatix, to use the s
 # estimate Null hypothesis is var1/var2 = 1
 var.test(Cholesterol ~ Group, data = Hyper_n)
 
-Hyper_base_tTest <- t.test(Cholesterol ~ Group, 
+Hyper_base_t.Test <- t.test(Cholesterol ~ Group, 
                            data = Hyper_n,
                            paired = FALSE,
-                           var.equal = FALSE,
+                           var.equal = TRUE,
                            alternative = "greater",
                            conf.level = 0.95)
+Hyper_base_t.Test
 
 Hyper_t_test <- Hyper_n %>% 
   t_test(Cholesterol ~ Group, 
-         p.adjust.method = "holm", 
+         p.adjust.method = "holm",
+         var.equal = TRUE,
          paired = FALSE, 
          alternative = "greater",
          conf.level = 0.95) %>% 
   add_significance()
 
 Hyper_t_test
+
+Hyper_n %>% cohens_d(Cholesterol ~ Group,
+                      ref.group = "HT",
+                      var.equal = TRUE,
+                      paired = FALSE,
+                      hedges.correction = TRUE,
+                      ci = TRUE,
+                      conf.level = 0.95)
 
 # And the non-parametric example
 Hyper_wilcox <- Hyper_n %>% 
@@ -136,36 +163,31 @@ Hyper_wilcox
 
 ## Robust statisticlal Methods
 
-Now for the **Example 1** we use a  robust statistic test for a two-sample trimmed mean test from the WRS2 package, the `yuen` test and the bootstrap version too `yuenbt`
+Now for the **Example 1** we can use a robust statistic test for a two-sample trimmed mean test from the WRS2 package, the `yuen` test.  The WRS2 package also has a bootstrap version of this test too `yuenbt`
 
 ```{r}
 
-SCL_yuen <- yuen(Pressure ~ Group, data = SCI_long)
+SCL_yuen <- yuen(Pressure ~ Group, data = SCI_long, side = FALSE)
 SCL_yuen
-# for effect size
-set.seed(123)
 
-yuen.effect.ci(Pressure ~ Group, data = SCI_long)
 ```
 
-For the **Example 2** we use a yuen test and other robust tests that may correct for outliers o "large" values.
+For the robust statistics, as for the non-parametric (and parametric) statistics, there is no difference in the measured pressure for the differen groups.  
 
+For the **Example 2** we use a yuen test and other robust tests that may correct for outliers or "large" values.  For the effect size function for trimmed means can be estimated by AKP (Algina, Keselman, Penfield) robust version of the Cohen's *d*, where the rule of the effect sizes go as 0.2, 0.5 and 0.8 correspond to small, medium and large effects.  
 ```{r}
-Hyper_yuen <- yuen(Cholesterol ~ Group, data = Hyper_n)
+Hyper_yuen <- yuen(Cholesterol ~ Group, data = Hyper_n, side = FALSE)
 Hyper_yuen
 
-# Effect size
-set.seed(123)
+# Effect size AKP (Algina, Keselman, Penfield)
 akp.effect(Cholesterol ~ Group, data = Hyper_n)
-yuen.effect.ci(Cholesterol ~ Group, data = Hyper_n)
 
 ```
 
 ### "Nice graphics"  
-No lets use an interesting R package that produces quite interesting graphics `ggstatsplot` we will make more examples of this package to solve ANOVA examples.
+Now we can use an interesting R package that produces quite interesting graphics `ggstatsplot` we will make more examples of this package to solve ANOVA examples.
 
 ```{r}
-
 # from the example 2 for the patients with primary hypertension (PH)
 ggbetweenstats(
   data = Hyper_n,
