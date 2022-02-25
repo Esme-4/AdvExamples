@@ -2,19 +2,19 @@
 title: "Repeated Measures OneWay ANOVA"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
-output: 
-  rmdformats::readthedown:
+output:
+  rmdformats::robobook:
     highlight: kate
 ---
-```{r include=FALSE}
-knitr::opts_chunk$set(fig.retina=2)
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r ipsum_setup, message=FALSE, warning=FALSE, cache=FALSE, echo=FALSE}
-library(hrbrthemes)
+```{r}
 library(tidyverse)
-
-update_geom_font_defaults(font_rc)
+library(emmeans)
+library(rstatix)
 ```
 
 # Example from the Chaper 8 Daniel  
@@ -24,8 +24,7 @@ Licciardone et al. examined subjects with chronic, nonspecific low back pain. In
 After loading the dataset we notice that it is formated in table format and need to be changed to 'longer' format using the `pivot_longer` and selecting the variables and setting the subject label apart, since the subject label is used for the repeated measures ANOVA function.    
 
 ```{r}
-library(tidyverse)
-#
+# Repeated measures One-Way ANOVA
 chronPain <- read_csv("~/Dropbox/GitHub/ProbEstad/DataSets/ch08_all/EXA_C08_S04_01.csv", col_names = TRUE, show_col_types = FALSE)
 
 chronPain_long <- chronPain %>%
@@ -55,8 +54,6 @@ We will estimate the model with the base library `aov()` function and the `emmea
 #
 # first load the missing libraries
 # library(car)
-library(emmeans)
-library(rstatix)
 
 # Testing for outliers
 chronPain_long %>% 
