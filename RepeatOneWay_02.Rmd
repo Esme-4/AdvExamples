@@ -41,7 +41,7 @@ chronPain_long <- chronPain_long %>%
 # A boxplot
 chronPain_long %>% ggplot(aes(x = TreatmentT, y = APhFq)) +
     geom_boxplot() +
-    geom_jitter(aes(colour = TreatmentT), shape = 16, position = position_jitter(seed = 123)) +
+    geom_jitter(aes(colour = TreatmentT), shape = 16, position = position_jitter(seed = 123), alpha = 0.6) +
     labs(title = "Responces to Assessing Physical Functioning questionaire (APhFq)") +
     theme_bw()
 
