@@ -72,16 +72,16 @@ chronPain_long %>%
   geom_qq_line(color = "blue")
 
 # With the aov R function
-(chronPain_long_aov <- aov( APhFq ~ TreatmentT + Error(Subject/TreatmentT), data = chronPain_long ))
+chronPain_long_aov <- aov( APhFq ~ TreatmentT + Error(Subject/TreatmentT), 
+                            data = chronPain_long )
 #
 summary(chronPain_long_aov)
 
 # To estimate the pairwise post hoc
-emm_aov <- emmeans(chronPain_long_aov, ~ TreatmentT)
-
-pairs(emm_aov)
-pwpm(emm_aov)
-plot(emm_aov, comparisons = TRUE)
+emmeans_aov <- emmeans(chronPain_long_aov, ~ TreatmentT)
+pairs(emmeans_aov)
+pwpm(emmeans_aov)
+plot(emmeans_aov, comparisons = TRUE)
 ```
 
 ## Using the `rstatix`  
