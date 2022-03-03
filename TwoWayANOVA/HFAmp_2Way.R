@@ -19,7 +19,7 @@ summary(HRV_aov)
 HRV_lm <- lm(AMP ~ factor(VEG) * factor(SMOKE), data = HRV)
 summary(HRV_lm)
 
-attach(HRV_lm)
+attach(HRV)
   interaction.plot(VEG, SMOKE, AMP)
 detach(HRV)
 # Altos valores de HRV están asociados con altos consumos de oxígeno, mientras que bajos valores denotan 
