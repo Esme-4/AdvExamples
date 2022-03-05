@@ -1,0 +1,46 @@
+---
+title: "Two-Way ANOVA"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rstatix)
+library(emmeans)
+```
+
+# Two_Way ANOVA
+
+A more complex model for analysis of variance is the case that we can relate two classes of predictor variables. The two-way ANOVA problems have two different classes of predictor variables *V1* and *V2* and therefore they can have interactions between the predictor variables, in R this is written like $Y ~ V1 * V2$ which is equivalent to $Y ~ V1 + V2 + V1:V2$.    
+Example of a two-way ANOVA problem from Daniel's book, chapter 8: Watanabe et al. studied 53 healthy middle-aged male workers. The researchers used the *Masstricht Vital Exhaustion Questionnaire to asses vital exhaustion. Based on the resultant scores, they assigned subjects into three groups: VE1, VE2, and VE3. VE1 indicates the fewest signs of exhaustion, and VE3 indicates the most signs of exhaustion. The researchers also asked subjects about their smoking habits. Smoking status was categorized as follows: SMOKE1 are nonsmokers, SMOKE2 are light smokers (20 cigarettes or fewer per day), SMOKE3 are heavy smokers (more than 20 cigarettes pr day). One of the outcome variables of interest was the amplitude of the high-frequency spectral analysis of heart rate variability (HRV) observed during an annual health checkup. This variable, HF-amplitude, was used as an index of parasympathetic nervous function. The data are summarized in the REV_C08_17.csv file.  Perform an analysis of variance and let $alpha = 0.05$.  
+
+Comment, high values of HRV are associated with high $O_2$ consumption and lower values are associated with higher mortality rate and high risk of cardiac pathology in asymptomatic patients.  
+
+```{r}
+HRV <- read_csv("https://raw.githubusercontent.com/fabarrios/ProbEstad/master/DataSets/ch08_all/REV_C08_17.csv", show_col_types = FALSE)
+
+HRV %>% get_summary_stats( "AMP", "SMOKE")
+
+HRV_new <- HRV %>% mutate( VEG = factor(VEG), SMOKE = factor(SMOKE) )
+
+HRV_new %>% ggplot(aes(x = VEG, y = AMP, fill = SMOKE)) +
+  geom_col()
+```
+
+To estimate the ANOVA model we can use the `aov()` or `lm()` functions with the interaction term.  
+```{r}
+HRV_aov <- aov(AMP ~ factor(VEG) * factor(SMOKE), data = HRV_new)
+summary(HRV_aov)
+
+HRV_lm <- lm(AMP ~ factor(VEG) * factor(SMOKE), data = HRV_new)
+summary(HRV_lm)
+```
+
+The interaction term is where we can find a difference. For the Ve2 and SMOKE2
