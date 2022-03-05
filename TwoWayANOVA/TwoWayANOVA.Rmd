@@ -7,8 +7,22 @@ output:
     highlight: kate
 ---
 ```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
+
+## Global options
+options(max.print="100")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=100)
+```
 ```
 
 ```{r}
@@ -25,7 +39,8 @@ Example of a two-way ANOVA problem from Daniel's book, chapter 8: Watanabe et al
 Comment, high values of HRV are associated with high $O_2$ consumption and lower values are associated with higher mortality rate and high risk of cardiac pathology in asymptomatic patients.  
 
 ```{r}
-HRV <- read_csv("https://raw.githubusercontent.com/fabarrios/ProbEstad/master/DataSets/ch08_all/REV_C08_17.csv", show_col_types = FALSE)
+HRV <- read_csv("https://raw.githubusercontent.com/fabarrios/ProbEstad/master/DataSets/ch08_all/REV_C08_17.csv",
+       show_col_types = FALSE)
 
 HRV %>% get_summary_stats( "AMP", "SMOKE")
 
@@ -47,16 +62,19 @@ summary(HRV_lm)
 The interaction term is where we can find a difference, using the `aov()` model. Using the `lm()` model in general we can find that the Ve2 and SMOKE2 value is extreme.  
 
 ```{r}
+
 attach(HRV_new)
   interaction.plot(VEG, SMOKE, AMP)
 detach(HRV_new)
-```  
 
-From the interaction plot we can see that the difference between the Ve1-SMOKE3 and the Ve2-SMOKE2, and the variables Ve and SMOKE appear to have no effect on the variable HRV.  
-
-```  
 HRV_aov_emmeans <- emmeans(HRV_aov, ~ VEG + SMOKE)
 
+#to print the pairwise emmeans in a matrix form
 pwpm(HRV_aov_emmeans)
 plot(HRV_aov_emmeans, comparisons = TRUE)
-```
+
+```  
+
+From the interaction plot we can see that the difference between the Ve1-SMOKE3 and Ve2-SMOKE3 with the Ve2-SMOKE2, and the variables Ve and SMOKE appear to have no effect on the variable HRV.  
+
+

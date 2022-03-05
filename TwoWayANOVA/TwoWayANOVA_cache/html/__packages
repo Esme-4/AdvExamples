@@ -9,3 +9,5 @@ stringr
 forcats
 rstatix
 emmeans
+knitr
+rmdformats
