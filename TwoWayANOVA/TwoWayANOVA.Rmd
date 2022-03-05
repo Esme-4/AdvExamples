@@ -50,4 +50,5 @@ The interaction term is where we can find a difference. For the Ve2 and SMOKE2
 HRV_aov_emmeans <- emmeans(HRV_aov, ~ VEG + SMOKE)
 
 pwpm(HRV_aov_emmeans)
+plot(HRV_aov_emmeans, comparisons = TRUE)
 ```
