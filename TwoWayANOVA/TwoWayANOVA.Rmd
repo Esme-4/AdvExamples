@@ -23,12 +23,13 @@ opts_chunk$set(echo=TRUE,
                warning=FALSE)
 opts_knit$set(width=100)
 ```
-```
 
 ```{r}
+
 library(tidyverse)
 library(rstatix)
 library(emmeans)
+
 ```
 
 # Two_Way ANOVA
