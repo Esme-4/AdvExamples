@@ -2,9 +2,6 @@
 # Two-way ANOVA example
 # Daniel review problem C08_17
 
-library(tidyverse)
-library(rstatix)
-library(emmeans)
 
 HRV <- read_csv("https://raw.githubusercontent.com/fabarrios/ProbEstad/master/DataSets/ch08_all/REV_C08_17.csv", show_col_types = FALSE)
 

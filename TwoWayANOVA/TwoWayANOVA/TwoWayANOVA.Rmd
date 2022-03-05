@@ -1,0 +1,38 @@
+---
+title: "Two-Way ANOVA"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rstatix)
+library(emmeans)
+```
+
+# Two_Way ANOVA
+
+A more complex model for analysis of variance is the case that we can relate two classes of predictor variables, for the two-way ANOVA problems have two different classes of predictor variables *V1* and *V2* and therefore we can have interactions between the predictor variables, in R this is written like $Y ~ V1 * V2$ which is equivalent to $Y ~ V1 + V2 + V1:V2$   
+Example of a two-way ANOVA problem from Daniel's book, chapter 8: Watanabe et al. studied 53 healthy middle-aged male workers. The researchers used the *Masstricht Vital Exhaustion Questionnaire to asses vital exhaustion. Based on the resultant scores, they assigned subjects into three groups: VE1, VE2, and VE3. VE1 indicates 
+
+```{r}
+HRV <- read_csv("https://raw.githubusercontent.com/fabarrios/ProbEstad/master/DataSets/ch08_all/REV_C08_17.csv", show_col_types = FALSE)
+
+HRV %>% get_summary_stats("AMP", "SMOKE")
+
+HRV %>% ggplot(aes(x = VEG, y = AMP, fill = SMOKE)) +
+  geom_col()
+
+HRV_aov <- aov(AMP ~ factor(VEG) * factor(SMOKE), data = HRV)
+summary(HRV_aov)
+
+HRV_lm <- lm(AMP ~ factor(VEG) * factor(SMOKE), data = HRV)
+summary(HRV_lm)
+```
+
