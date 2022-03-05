@@ -44,13 +44,17 @@ HRV_lm <- lm(AMP ~ VEG * SMOKE, data = HRV_new)
 summary(HRV_lm)
 ```
 
-The interaction term is where we can find a difference. For the Ve2 and SMOKE2
+The interaction term is where we can find a difference, using the `aov()` model. Using the `lm()` model in general we can find that the Ve2 and SMOKE2 value is extreme.  
 
 ```{r}
 attach(HRV_new)
   interaction.plot(VEG, SMOKE, AMP)
 detach(HRV_new)
-  
+```  
+
+From the interaction plot we can see that the difference between the Ve1-SMOKE3 and the Ve2-SMOKE2, and the variables Ve and SMOKE appear to have no effect on the variable HRV.  
+
+```  
 HRV_aov_emmeans <- emmeans(HRV_aov, ~ VEG + SMOKE)
 
 pwpm(HRV_aov_emmeans)
