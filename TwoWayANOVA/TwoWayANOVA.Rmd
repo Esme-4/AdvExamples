@@ -47,6 +47,10 @@ summary(HRV_lm)
 The interaction term is where we can find a difference. For the Ve2 and SMOKE2
 
 ```{r}
+attach(HRV_new)
+  interaction.plot(VEG, SMOKE, AMP)
+detach(HRV_new)
+  
 HRV_aov_emmeans <- emmeans(HRV_aov, ~ VEG + SMOKE)
 
 pwpm(HRV_aov_emmeans)
