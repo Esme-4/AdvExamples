@@ -2002,6 +2002,16 @@ Lower triangle: Comparisons (estimate)   earlier vs. later</code></pre>
 <p>From the interaction plot we can see that the difference between the
 Ve1-SMOKE3 and Ve2-SMOKE3 with the Ve2-SMOKE2, and the variables Ve and
 SMOKE appear to have no effect on the variable HRV.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># with anova_test from rstatix</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>HRV_aov_test <span class="ot">&lt;-</span> HRV_new <span class="sc">%&gt;%</span> <span class="fu">anova_test</span>(AMP <span class="sc">~</span> VEG <span class="sc">*</span> SMOKE, <span class="at">effect.size =</span> <span class="st">&quot;ges&quot;</span>, <span class="at">detailed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">get_anova_table</span>(HRV_aov_test, <span class="at">correction =</span> <span class="st">&quot;GG&quot;</span>)</span></code></pre></div>
+<pre><code>ANOVA Table (type II tests)
+
+     Effect     SSn      SSd DFn DFd     F     p p&lt;.05   ges
+1       VEG 340.597 2706.445   2  43 2.706 0.078       0.112
+2     SMOKE 113.680 2706.445   2  43 0.903 0.413       0.040
+3 VEG:SMOKE 733.098 2706.445   4  43 2.912 0.032     * 0.213</code></pre>
 </div>
 
    

@@ -78,4 +78,10 @@ plot(HRV_aov_emmeans, comparisons = TRUE)
 
 From the interaction plot we can see that the difference between the Ve1-SMOKE3 and Ve2-SMOKE3 with the Ve2-SMOKE2, and the variables Ve and SMOKE appear to have no effect on the variable HRV.  
 
+```{r}
+# with anova_test from rstatix
+HRV_aov_test <- HRV_new %>% anova_test(AMP ~ VEG * SMOKE, effect.size = "ges", detailed = TRUE)
 
+get_anova_table(HRV_aov_test, correction = "GG")
+
+```
