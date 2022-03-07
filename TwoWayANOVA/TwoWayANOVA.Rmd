@@ -91,19 +91,30 @@ From the interaction plot we can see that the difference between the Ve1-SMOKE3 
 Now using the `rstatix` library
 ```{r}
 # with anova_test from rstatix
-HRV_aov_test <- HRV_new %>% anova_test(AMP ~ VEG * SMOKE, effect.size = "ges", detailed = TRUE)
-
+HRV_aov_test <- HRV_new %>% 
+  anova_test(AMP ~ VEG * SMOKE, 
+             effect.size = "ges", 
+             detailed = TRUE)
 get_anova_table(HRV_aov_test, correction = "GG")
 
 pwc <- HRV_new %>%
   group_by(VEG) %>%
   emmeans_test(AMP ~ SMOKE, p.adjust.method = "bonferroni")
 pwc
-
 # to place these results in the boxplot we make
 pwc <- pwc %>% add_xy_position(x = "VEG")
 
-# pxp is the boxplot that we made before 
+# paired comparisons for the predictors without interaction
+HRV_new %>% 
+  emmeans_test( AMP ~ VEG, 
+    p.adjust.method = "bonferroni", 
+    model = HRV_lm )
+
+HRV_new %>% emmeans_test( AMP ~ SMOKE, 
+     p.adjust.method = "bonferroni",
+     model = HRV_lm)
+
+# pxp is the boxplot that we made before to add the statistics results
 bxp +
   stat_pvalue_manual(pwc) +
   labs(
