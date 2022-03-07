@@ -17,7 +17,7 @@ options(max.print="100")
 opts_chunk$set(echo=TRUE,
 	             cache=TRUE,
                prompt=FALSE,
-               tidy=TRUE,
+#               tidy=TRUE,
                comment=NA,
                message=FALSE,
                warning=FALSE)
@@ -25,14 +25,13 @@ opts_knit$set(width=100)
 ```
 
 ```{r}
-
 library(tidyverse)
 library(emmeans)
 library(rstatix)
 library(ggpubr)
 ```
 
-# Two_Way ANOVA
+# Two_Way ANOVA  
 
 A more complex model for analysis of variance is the case that we can relate two classes of predictor variables. The two-way ANOVA problems have two different classes of predictor variables *V1* and *V2* and therefore they can have interactions between the predictor variables, in R this is written like *Y ~ V1 + V2 + V1:V2*.    
 Example of a two-way ANOVA problem from Daniel's book, chapter 8: Watanabe et al. studied 53 healthy middle-aged male workers. The researchers used the *Masstricht Vital Exhaustion Questionnaire* to asses vital exhaustion. Based on the resultant scores, they assigned subjects into three groups: VE1, VE2, and VE3. VE1 indicates the fewest signs of exhaustion, and VE3 indicates the most signs of exhaustion. The researchers also asked subjects about their smoking habits. Smoking status was categorized as follows: SMOKE1 are nonsmokers, SMOKE2 are light smokers (20 cigarettes or fewer per day), SMOKE3 are heavy smokers (more than 20 cigarettes pr day). One of the outcome variables of interest was the amplitude of the high-frequency spectral analysis of heart rate variability (HRV) observed during an annual health checkup. This variable, HF-amplitude, was used as an index of parasympathetic nervous function. The data are summarized in the REV_C08_17.csv file.  Perform an analysis of variance and let $alpha = 0.05$.  
@@ -69,6 +68,11 @@ ggqqplot(residuals(HRV_aov))
 
 ggqqplot(HRV_new, "AMP", ggtheme = theme_bw()) +
   facet_grid(VEG ~ SMOKE)
+
+HRV_new %>%
+  group_by(VEG) %>%
+  shapiro_test(AMP)
+
 ```
 
 The interaction term is where we can find a difference, using the `aov()` model. Using the `lm()` model in general we can find that the Ve2 and SMOKE2 value is extreme.  
