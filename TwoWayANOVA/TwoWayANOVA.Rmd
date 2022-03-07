@@ -27,9 +27,9 @@ opts_knit$set(width=100)
 ```{r}
 
 library(tidyverse)
-library(rstatix)
 library(emmeans)
-
+library(rstatix)
+library(ggpubr)
 ```
 
 # Two_Way ANOVA
@@ -49,6 +49,12 @@ HRV_new <- HRV %>% mutate( VEG = factor(VEG), SMOKE = factor(SMOKE) )
 
 HRV_new %>% ggplot(aes(x = VEG, y = AMP, fill = SMOKE)) +
   geom_col()
+
+bxp <- ggboxplot(
+  HRV_new, x = "VEG", y = "AMP",
+  color = "SMOKE", palette = "lancet"
+  )
+bxp
 ```
 
 To estimate the ANOVA model we can use the `aov()` or `lm()` functions with the interaction term.  
@@ -58,12 +64,16 @@ summary(HRV_aov)
 
 HRV_lm <- lm(AMP ~ VEG * SMOKE, data = HRV_new)
 summary(HRV_lm)
+
+ggqqplot(residuals(HRV_aov))
+
+ggqqplot(HRV_new, "AMP", ggtheme = theme_bw()) +
+  facet_grid(VEG ~ SMOKE)
 ```
 
 The interaction term is where we can find a difference, using the `aov()` model. Using the `lm()` model in general we can find that the Ve2 and SMOKE2 value is extreme.  
 
 ```{r}
-
 attach(HRV_new)
   interaction.plot(VEG, SMOKE, AMP)
 detach(HRV_new)
@@ -78,10 +88,27 @@ plot(HRV_aov_emmeans, comparisons = TRUE)
 
 From the interaction plot we can see that the difference between the Ve1-SMOKE3 and Ve2-SMOKE3 with the Ve2-SMOKE2, and the variables Ve and SMOKE appear to have no effect on the variable HRV.  
 
+Now using the `rstatix` library
 ```{r}
 # with anova_test from rstatix
 HRV_aov_test <- HRV_new %>% anova_test(AMP ~ VEG * SMOKE, effect.size = "ges", detailed = TRUE)
 
 get_anova_table(HRV_aov_test, correction = "GG")
+
+pwc <- HRV_new %>%
+  group_by(VEG) %>%
+  emmeans_test(AMP ~ SMOKE, p.adjust.method = "bonferroni")
+pwc
+
+# to place these results in the boxplot we make
+pwc <- pwc %>% add_xy_position(x = "VEG")
+
+# pxp is the boxplot that we made before 
+bxp +
+  stat_pvalue_manual(pwc) +
+  labs(
+    subtitle = get_test_label(HRV_aov_test, detailed = TRUE),
+    caption = get_pwc_label(pwc)
+    )
 
 ```
