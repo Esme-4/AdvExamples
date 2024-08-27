@@ -29,7 +29,7 @@ Some general R functions
 There are "Cheatsheets" for several very useful libraries (tidyverse family) I recommend print them in color and keep them handy they are used very frequently. [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/) from `tidy` family from Rstudio.    
 
 ## Tidy Data (as `dplyr`)  
-First always load `tidyverse` using the `library()` command. There is a fundamental way of thinking using the "pipe" command `%>%` simplifying the way data is "passed to the functions in R in a "tidy" [tibbles way](https://es.r4ds.hadley.nz/tibbles.html) to find an intro of data handling in "tibbles".  The fundamental concept of a tibble and the relation of the variable, observation, and value the order is very important and for data structures and tibbles must follow:    
+First always load `tidyverse` using the `library()` command. There is a fundamental way of thinking using the "pipe" command `%>%` simplifying the way data is "passed to the functions in R in a "tidy way", [tibbles way](https://r4ds.hadley.nz/) to find an intro of data handling in "tibbles".  The fundamental concept of a tibble and the relation of the variable, observation, and value the order is very important and for data structures and tibbles must follow:    
 - Each **variable** is in its own **column**  
 - Each **observation**, or case, is in its own **row**  
 - Each **value** is in its **cell**    
